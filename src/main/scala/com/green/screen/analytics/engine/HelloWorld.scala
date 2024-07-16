@@ -1,4 +1,4 @@
-package com.environ.mental.analytics.engine
+package com.green.screen.analytics.engine
 
 import cats.Applicative
 import cats.implicits.*

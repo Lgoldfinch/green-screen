@@ -1,4 +1,4 @@
-package com.environ.mental
+package com.green.screen
 
 import cats.effect.Concurrent
 import cats.implicits._
