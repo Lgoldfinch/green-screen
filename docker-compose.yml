@@ -1,0 +1,31 @@
+version: '3.8'
+services:
+  database:
+    container_name: green-screen-postgres
+    image: postgres
+    restart: always
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_DB: green-screen-postgres
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+
+#  server:
+#    container_name: green-screen
+#    image: green-screen:latest
+#    env_file:
+#          .env
+#    build:
+#      context: .
+##      dockerfile: Dockerfile
+#    depends_on:
+#      - database
+#    networks:
+#      - default
+#    ports:
+#      - "8080:8080"
+volumes:
+  data:
