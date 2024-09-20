@@ -13,6 +13,7 @@ object Server extends IOApp:
 
     (for {
         resources <- AppResources.make[IO]
+        _ <- Resource.eval(SqlMigrator[IO]("jdbc:postgresql://localhost:5432/green-screen-postgres").run)
         httpApp = AnalyticsEngineRoutes.analyticsRoutes[IO]("Fuck", resources.postgres).orNotFound
         _ <-
           EmberServerBuilder.default[IO]

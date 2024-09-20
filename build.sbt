@@ -13,8 +13,11 @@ lazy val root = (project in file("."))
     fork := true,
   libraryDependencies ++= List.concat(
     CatsEffect,
+    FlywayDb,
     Http4s,
     Logback,
+    Logging,
+    Refined,
     Skunk
   ) ++ List.concat(MunitTest,
     MunitCatsEffect).map(_ % Test))
