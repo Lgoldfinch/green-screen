@@ -24,9 +24,6 @@ object transactions {
   }
 
 
-  opaque type TransactionName = NonEmptyString
-  val transactionNameCodec: Codec[TransactionName] = nesCodec.imap(nes => nes: TransactionName)(tn => tn: NonEmptyString)
-
   opaque type TransactionAmount = Double
 
   object TransactionAmount {
@@ -40,7 +37,8 @@ object transactions {
       def value: Double = t
   }
 
-  final case class Transaction(uuid: TransactionUuid, name: TransactionName, amount: TransactionAmount)
+  // Prefixed User here to differentiate from the Transaction class from Skunk.
+  final case class UserTransaction(uuid: TransactionUuid, companyUuid: CompanyUuid, amount: TransactionAmount)
 
   object UserTransaction:
     val transactionCodec: Codec[UserTransaction] =
