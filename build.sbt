@@ -20,7 +20,7 @@ lazy val root = (project in file("."))
     Refined,
     Skunk
   ) ++ List.concat(MunitTest,
-    MunitCatsEffect).map(_ % Test))
+    MunitCatsEffect, MunitCatsEffectScalaCheck).map(_ % Test))
   .settings(
     Docker / packageName := packageName.value,
     Docker / version := version.value,

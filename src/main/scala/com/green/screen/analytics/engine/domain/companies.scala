@@ -22,6 +22,7 @@ object companies:
       def value: CompanyUuid = cUuid
 
     val companyUuidCodec: Codec[CompanyUuid] = uuid.imap(CompanyUuid.apply)(_.value)
+    implicit val ordering: Ordering[CompanyUuid] = _.compareTo(_)
   }
 
   opaque type CompanyName = NonEmptyString

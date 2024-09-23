@@ -14,7 +14,8 @@ object Dependencies {
 
     // TEST
     val Munit = "0.7.29"
-    val MunitCatsEffect = "2.0.0"
+    val MunitCatsEffect = "1.0.7"
+    val MunitCatsEffectScalaCheck = "1.0.4"
   }
 
   val CatsEffect = List(
@@ -61,8 +62,10 @@ object Dependencies {
     "org.scalameta" %% "munit-scalacheck"
   ).map(_ % Version.Munit)
 
+  val MunitCatsEffectScalaCheck = List("org.typelevel" %% "scalacheck-effect-munit" % Version.MunitCatsEffectScalaCheck)
+
   val MunitCatsEffect = List(
-    "org.typelevel" %% "munit-cats-effect" % Version.MunitCatsEffect
+    "org.typelevel" %% "munit-cats-effect-3" % Version.MunitCatsEffect
   )
 
 }
