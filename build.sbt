@@ -20,12 +20,16 @@ lazy val root = (project in file("."))
     Refined,
     Skunk
   ) ++ List.concat(MunitTest,
-    MunitCatsEffect, MunitCatsEffectScalaCheck).map(_ % Test))
+    MunitCatsEffect, MunitCatsEffectScalaCheck,
+    Weaver
+  ).map(_ % Test),
+    testFrameworks += new TestFramework("weaver.framework.CatsEffect")
+)
   .settings(
     Docker / packageName := packageName.value,
     Docker / version := version.value,
     dockerBaseImage := "openjdk:21",
     dockerExposedPorts ++= Seq(8080)
-  )
+)
 
 //scalacOptions += "-Wnonunit-statement"

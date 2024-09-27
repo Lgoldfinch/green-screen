@@ -16,6 +16,7 @@ object Dependencies {
     val Munit = "0.7.29"
     val MunitCatsEffect = "1.0.7"
     val MunitCatsEffectScalaCheck = "1.0.4"
+    val Weaver = "0.8.4"
   }
 
   val CatsEffect = List(
@@ -68,4 +69,8 @@ object Dependencies {
     "org.typelevel" %% "munit-cats-effect-3" % Version.MunitCatsEffect
   )
 
+  val Weaver = List(
+    "com.disneystreaming" %% "weaver-cats" % Version.Weaver,
+    "com.disneystreaming" %% "weaver-scalacheck" % Version.Weaver
+  )
 }
