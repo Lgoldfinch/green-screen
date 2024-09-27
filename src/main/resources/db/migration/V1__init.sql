@@ -2,7 +2,7 @@ CREATE TABLE IF NOT EXISTS companies
 (
     uuid  UUID PRIMARY KEY,
     name TEXT NOT NULL,
-    co2Emissions FLOAT8
+    co2Emissions FLOAT4
 );
 
 CREATE INDEX IF NOT EXISTS companies_index ON companies(uuid);
