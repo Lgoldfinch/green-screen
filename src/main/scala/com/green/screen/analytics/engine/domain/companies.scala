@@ -1,10 +1,11 @@
 package com.green.screen.analytics.engine.domain
 
+import cats.Show
 import cats.syntax.all.*
 import com.green.screen.analytics.engine.domain.companies.*
-import CompanyCo2EmissionsMetricTonnes.*
-import CompanyName.*
-import CompanyUuid.*
+import com.green.screen.analytics.engine.domain.companies.CompanyCo2EmissionsMetricTonnes.*
+import com.green.screen.analytics.engine.domain.companies.CompanyName.*
+import com.green.screen.analytics.engine.domain.companies.CompanyUuid.*
 import com.green.screen.common.domain.skunks.*
 import eu.timepit.refined.types.string.NonEmptyString
 import skunk.*
@@ -51,12 +52,13 @@ object companies:
 
   final case class Company(uuid: CompanyUuid, name: CompanyName, co2Emissions: CompanyCo2EmissionsMetricTonnes)
 
-  object Company:
+  object Company {
     val companyCodec: Codec[Company] =
       (companyUuidCodec, companyNameCodec, co2EmissionsCodec).tupled.imap(Company.apply) {
-       case Company(uuid, name, co2Emissions) => (uuid, name, co2Emissions)
+        case Company(uuid, name, co2Emissions) => (uuid, name, co2Emissions)
       }
-  end Company
 
+    implicit val companyShow: Show[Company] = Show.show(_.toString)
+  }
 end companies
 
