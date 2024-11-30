@@ -9,7 +9,7 @@ object Dependencies {
     val Logback = "1.2.6"
     val Log4Cats     = "2.2.0"
     val Refined     = "0.11.2"
-    val FlywayDb     = "10.15.2"
+    val FlywayDb     = "9.8.2"
     val PostgresJdbc = "42.7.3"
 
     // TEST

@@ -10,7 +10,7 @@ CREATE INDEX IF NOT EXISTS companies_index ON companies(uuid);
 CREATE TABLE IF NOT EXISTS transactions (
     uuid UUID PRIMARY KEY,
     company_uuid UUID NOT NULL,
-    amount FLOAT4 NOT NULL,
+    amount FLOAT8 NOT NULL,
 
     CONSTRAINT fk_company_transaction_uuid
         FOREIGN KEY (company_uuid)
