@@ -4,6 +4,8 @@ object Dependencies {
   object Version {
     val ScalaVersion = "3.4.2"
     val CatsEffect = "3.5.4"
+    val Circe = "0.14.1"
+    val CirceRefined = "0.15.1"
     val Http4s = "0.23.27"
     val Skunk = "0.6.4"
     val Logback = "1.2.6"
@@ -24,6 +26,13 @@ object Dependencies {
     "org.typelevel" %% "cats-effect-kernel",
     "org.typelevel" %% "cats-effect-std",
   ).map(_ % Version.CatsEffect)
+
+  val Circe = List(
+    "io.circe" %% "circe-core",
+    "io.circe" %% "circe-generic",
+    "io.circe" %% "circe-parser",
+    "io.circe" %% "circe-refined"
+  ).map(_ % Version.Circe)
 
   val FlywayDb = List(
     "org.flywaydb" % "flyway-core" % Version.FlywayDb,

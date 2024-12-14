@@ -13,6 +13,7 @@ lazy val root = (project in file("."))
     fork := true,
   libraryDependencies ++= List.concat(
     CatsEffect,
+    Circe,
     FlywayDb,
     Http4s,
     Logback,
