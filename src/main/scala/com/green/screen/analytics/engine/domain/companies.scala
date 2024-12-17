@@ -10,7 +10,6 @@ import com.green.screen.common.domain.skunks.*
 import eu.timepit.refined.types.string.NonEmptyString
 import skunk.*
 import skunk.codec.all.*
-
 import java.util.UUID
 
 object companies:
@@ -32,8 +31,9 @@ object companies:
   object CompanyName {
     def apply(nes: NonEmptyString): CompanyName = nes
 
-    extension (cn: CompanyName)
+    extension (cn: CompanyName) {
       def value: NonEmptyString = cn
+    }
 
     val companyNameCodec: Codec[CompanyName] = nesCodec.imap(CompanyName.apply)(_.value)
   }
@@ -57,7 +57,7 @@ object companies:
       (companyUuidCodec, companyNameCodec, co2EmissionsCodec).tupled.imap(Company.apply) {
         case Company(uuid, name, co2Emissions) => (uuid, name, co2Emissions)
       }
-
+    
     implicit val companyShow: Show[Company] = Show.show(_.toString)
   }
 end companies
