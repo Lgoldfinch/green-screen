@@ -7,10 +7,10 @@ import com.green.screen.analytics.engine.programs.ProcessTransaction
 import org.http4s.HttpRoutes
 import org.http4s.circe.CirceEntityDecoder.*
 import org.http4s.dsl.Http4sDsl
-import java.time.Instant
+import org.typelevel.log4cats.Logger
 
 object AnalyticsEngineRoutes {
-  def analyticsRoutes[F[_]: Concurrent](processTransaction: ProcessTransaction[F]): HttpRoutes[F] = {
+  def analyticsRoutes[F[_]: Concurrent: Logger](processTransaction: ProcessTransaction[F]): HttpRoutes[F] = {
     val dsl = new Http4sDsl[F] {}
     import dsl.*
     HttpRoutes.of[F] {

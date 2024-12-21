@@ -1,5 +1,5 @@
 <configuration>
-  <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+  <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
     <!-- On Windows machines setting withJansi to true enables ANSI
          color code interpretation by the Jansi library. This requires
          org.fusesource.jansi:jansi:1.8 on the class path.  Note that
@@ -11,6 +11,6 @@
     </encoder>
   </appender>
   <root level="INFO">
-    <appender-ref ref="STDOUT" />
+    <appender-ref ref="CONSOLE" />
   </root>
 </configuration>
