@@ -1,6 +1,6 @@
 package com.green.screen.analytics.engine.domain
 
-import cats.Show
+import cats.{Eq, Show}
 import cats.syntax.all.*
 import com.green.screen.analytics.engine.domain.companies.*
 import com.green.screen.analytics.engine.domain.companies.CompanyCo2EmissionsMetricTonnes.*
@@ -10,6 +10,7 @@ import com.green.screen.common.domain.skunks.*
 import eu.timepit.refined.types.string.NonEmptyString
 import skunk.*
 import skunk.codec.all.*
+
 import java.util.UUID
 
 object companies:
@@ -23,6 +24,9 @@ object companies:
 
     val companyUuidCodec: Codec[CompanyUuid] = uuid.imap(CompanyUuid.apply)(_.value)
     implicit val ordering: Ordering[CompanyUuid] = _.compareTo(_)
+    
+    implicit val eq: Eq[CompanyUuid] = Eq.fromUniversalEquals
+    
   }
 
   opaque type CompanyName = NonEmptyString

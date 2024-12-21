@@ -5,12 +5,11 @@ import cats.effect.*
 import cats.effect.kernel.{Concurrent, MonadCancelThrow, Resource}
 import cats.syntax.all.*
 import com.green.screen.analytics.engine.algebras.CompaniesSQL.*
-import com.green.screen.analytics.engine.domain.companies.*
+import com.green.screen.analytics.engine.domain.companies.{CompanyName, *}
 import com.green.screen.analytics.engine.domain.companies.Company.companyCodec
 import com.green.screen.analytics.engine.domain.companies.CompanyUuid.companyUuidCodec
-import com.green.screen.analytics.engine.domain.companies.CompanyName._
+import com.green.screen.analytics.engine.domain.companies.CompanyName.*
 import com.green.screen.analytics.engine.domain.companies.CompanyCo2EmissionsMetricTonnes.co2EmissionsCodec
-import com.green.screen.analytics.engine.domain.transactions.TransactionEntity
 import skunk.*
 import skunk.syntax.all.*
 import skunk.codec.all.*
@@ -21,7 +20,7 @@ trait Companies[F[_]] {
 
   def getCompany(companyUuid: CompanyUuid): F[Option[Company]]
 
-  def getCompanyByName(transactionEntity: TransactionEntity): F[List[Company]]
+  def getCompanyUuidByName(transactionEntity: CompanyName): F[Option[CompanyUuid]]
 }
 
 object Companies:
@@ -48,8 +47,9 @@ object Companies:
       )
     )
 
-    override def getCompanyByName(transactionEntity: TransactionEntity): F[List[Company]] = ???
-
+    override def getCompanyUuidByName(companyName: CompanyName): F[Option[(CompanyUuid)]] = resource.use(
+      _.prepare(queryGetUuidByName).flatMap(_.option((CompanyName(companyName.value), CompanyName(companyName.value))).map(_.map(_._1)))
+    )
 
 end Companies
 
@@ -70,6 +70,15 @@ object CompaniesSQL:
          SELECT uuid, name, co2emissions FROM companies
          WHERE uuid = $companyUuidCodec
          """.query(companyCodec)
+
+
+  val queryGetUuidByName: Query[(CompanyName, CompanyName), (CompanyUuid, Float)] =
+    sql"""
+         SELECT uuid, ts_rank(name_tsv, plainto_tsquery($companyNameCodec)) AS rank FROM companies
+         WHERE name_tsv @@ plainto_tsquery($companyNameCodec)
+         ORDER BY rank DESC
+         LIMIT 1
+         """.query(companyUuidCodec ~ float4)
 
 end CompaniesSQL
 

@@ -2,7 +2,8 @@ package com.green.screen.analytics.engine.domain
 
 import cats.Show
 import cats.syntax.all.*
-import com.green.screen.analytics.engine.domain.common.CreatedAt
+import com.green.screen.analytics.engine.domain.common.CreatedAt.*
+import com.green.screen.analytics.engine.domain.common.{CreatedAt, nesDecoder}
 import com.green.screen.analytics.engine.domain.companies.CompanyUuid
 import com.green.screen.analytics.engine.domain.companies.CompanyUuid.companyUuidCodec
 import com.green.screen.analytics.engine.domain.transactions.TransactionAmount.transactionAmountCodec
@@ -10,14 +11,12 @@ import com.green.screen.analytics.engine.domain.transactions.TransactionUuid.*
 import eu.timepit.refined.types.string.NonEmptyString
 import io.circe
 import io.circe.*
-import io.circe.Decoder.Result
-import io.circe.syntax.*
 import skunk.Codec
 import skunk.codec.all.*
 import io.circe.generic.semiauto.*
 
 import java.util.UUID
-import io.circe.refined.*
+
 object transactions:
 
   opaque type TransactionUuid = UUID
@@ -43,9 +42,7 @@ object transactions:
     extension (t: TransactionAmount)
       def value: Double = t
 
-    implicit val transactionAmountDecoder: Decoder[TransactionAmount] = _.get[TransactionAmount]("amount")
-
-    implicit val transactionAmountEncoder: Encoder[TransactionAmount] = _.asJson
+    implicit val transactionAmountDecoder: Decoder[TransactionAmount] = Decoder.decodeDouble.map(TransactionAmount(_))
   }
 
   // Prefixed User here to differentiate from the Transaction class from Skunk.
@@ -68,8 +65,7 @@ object transactions:
     extension (entity: TransactionEntity)
       def value: NonEmptyString = entity
 
-    given transactionEntityDecoder: Decoder[TransactionEntity] with
-      override def apply(c: HCursor): Result[TransactionEntity] = c.get[TransactionEntity]("transaction_entity")
+    implicit val transactionEntityDecoder: Decoder[TransactionEntity] = nesDecoder.map(TransactionEntity.apply)
   }
 
   final case class CreateTransactionRequest(name: TransactionEntity, amount: TransactionAmount, createdAt: CreatedAt)

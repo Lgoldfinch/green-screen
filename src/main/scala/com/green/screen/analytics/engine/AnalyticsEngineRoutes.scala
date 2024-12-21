@@ -8,6 +8,7 @@ import org.http4s.HttpRoutes
 import org.http4s.circe.CirceEntityDecoder.*
 import org.http4s.dsl.Http4sDsl
 import org.typelevel.log4cats.Logger
+import com.green.screen.analytics.engine.programs.ProcessTransaction.CompanyNotFound
 
 object AnalyticsEngineRoutes {
   def analyticsRoutes[F[_]: Concurrent: Logger](processTransaction: ProcessTransaction[F]): HttpRoutes[F] = {
@@ -15,17 +16,14 @@ object AnalyticsEngineRoutes {
     import dsl.*
     HttpRoutes.of[F] {
       case req @ POST -> Root / "transactions" =>
-        for {
-          request <- req.as[CreateTransactionRequest]
-          _ <- processTransaction.run(request)
-          resp <- Created()
-        } yield resp
-
+        req.as[CreateTransactionRequest].flatMap( createTransactionRequest =>
+          processTransaction.createTransaction(createTransactionRequest).flatMap(Created(_)).recoverWith {
+            case err: CompanyNotFound =>
+              NotFound(err.getMessage)
+          }
+        )
       case GET -> Root / "transactions" =>
-        for {
-          _ <- processTransaction.runAgain
-          resp <- Created()
-        } yield resp
+       ???
     }
   }
 }
