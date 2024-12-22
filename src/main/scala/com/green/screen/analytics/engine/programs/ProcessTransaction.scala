@@ -4,7 +4,11 @@ import cats.MonadThrow
 import com.green.screen.analytics.engine.algebras.Companies
 import com.green.screen.analytics.engine.algebras.UserTransactions
 import com.green.screen.analytics.engine.domain.companies.*
-import com.green.screen.analytics.engine.domain.transactions.{CreateTransactionRequest, TransactionUuid, UserTransaction}
+import com.green.screen.analytics.engine.domain.transactions.{
+  CreateTransactionRequest,
+  TransactionUuid,
+  UserTransaction
+}
 import cats.syntax.all.*
 import com.green.screen.analytics.engine.domain.transactions.TransactionEntity._
 import java.util.UUID
@@ -19,8 +23,8 @@ class ProcessTransaction[F[_]: MonadThrow: GenUUID](companies: Companies[F], tra
     val companyName = request.name.toCompanyName
 
     for {
-      companyUuidOpt <- companies.getCompanyUuidByName(companyName)
-      companyUuid <- companyUuidOpt.liftTo[F](CompanyNotFound(companyName))
+      companyUuidOpt  <- companies.getCompanyUuidByName(companyName)
+      companyUuid     <- companyUuidOpt.liftTo[F](CompanyNotFound(companyName))
       transactionUuid <- GenUUID[F].make.map(TransactionUuid.apply)
       transaction = UserTransaction(
         transactionUuid,
@@ -29,7 +33,7 @@ class ProcessTransaction[F[_]: MonadThrow: GenUUID](companies: Companies[F], tra
       )
       _ <- transactions.createTransaction(transaction)
     } yield ()
-}
+  }
 
 end ProcessTransaction
 

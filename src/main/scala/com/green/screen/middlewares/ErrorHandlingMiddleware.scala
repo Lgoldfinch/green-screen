@@ -7,18 +7,16 @@ import org.typelevel.log4cats.Logger
 import cats.syntax.all.*
 
 object ErrorHandlingMiddleware {
-  def apply[F[_]: ApplicativeThrow: Logger](app: HttpApp[F]): HttpApp[F] = Kleisli {
-    req =>
-      app(req)
-        .recoverWith {
-          case err @ InvalidMessageBodyFailure(details, cause) =>
-            val reason = cause.flatMap( err => Option(err.getMessage)).getOrElse("Unknown")
-            val errorMsg = s"The request body was invalid. Reason: $reason"
+  def apply[F[_]: ApplicativeThrow: Logger](app: HttpApp[F]): HttpApp[F] = Kleisli { req =>
+    app(req)
+      .recoverWith { case err @ InvalidMessageBodyFailure(details, cause) =>
+        val reason   = cause.flatMap(err => Option(err.getMessage)).getOrElse("Unknown")
+        val errorMsg = s"The request body was invalid. Reason: $reason"
 
-            Logger[F].warn(errorMsg) *> Response[F](Status.UnprocessableEntity).withEntity(errorMsg).pure[F]
-        }
-        .onError {
-          case err => Logger[F].warn(Option(err.getMessage).getOrElse("No error message found"))
-        }
+        Logger[F].warn(errorMsg) *> Response[F](Status.UnprocessableEntity).withEntity(errorMsg).pure[F]
+      }
+      .onError { case err =>
+        Logger[F].warn(Option(err.getMessage).getOrElse("No error message found"))
+      }
   }
 }

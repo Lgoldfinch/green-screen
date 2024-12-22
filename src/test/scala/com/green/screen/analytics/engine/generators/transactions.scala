@@ -7,17 +7,17 @@ import companies.companyUuidGen
 
 object transactions {
   val transactionUuidGen: Gen[TransactionUuid] = Gen.uuid.map(TransactionUuid.apply)
-  
+
   val transactionAmountGen: Gen[TransactionAmount] = Gen.double.map(TransactionAmount.apply)
-  
+
   val transactionGen: Gen[UserTransaction] = for {
-    transactionUuid <- transactionUuidGen
-    companyUuid <- companyUuidGen
+    transactionUuid   <- transactionUuidGen
+    companyUuid       <- companyUuidGen
     transactionAmount <- transactionAmountGen
-  } yield UserTransaction(transactionUuid, companyUuid, transactionAmount) 
-  
+  } yield UserTransaction(transactionUuid, companyUuid, transactionAmount)
+
   def transactionGen(companyUuid: CompanyUuid): Gen[UserTransaction] = for {
-    transactionUuid <- transactionUuidGen
+    transactionUuid   <- transactionUuidGen
     transactionAmount <- transactionAmountGen
   } yield UserTransaction(transactionUuid, companyUuid, transactionAmount)
 }

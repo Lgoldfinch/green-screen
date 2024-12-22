@@ -16,14 +16,16 @@ object AnalyticsEngineRoutes {
     import dsl.*
     HttpRoutes.of[F] {
       case req @ POST -> Root / "transactions" =>
-        req.as[CreateTransactionRequest].flatMap( createTransactionRequest =>
-          processTransaction.createTransaction(createTransactionRequest).flatMap(Created(_)).recoverWith {
-            case err: CompanyNotFound =>
-              NotFound(err.getMessage)
-          }
-        )
+        req
+          .as[CreateTransactionRequest]
+          .flatMap(createTransactionRequest =>
+            processTransaction.createTransaction(createTransactionRequest).flatMap(Created(_)).recoverWith {
+              case err: CompanyNotFound =>
+                NotFound(err.getMessage)
+            }
+          )
       case GET -> Root / "transactions" =>
-       ???
+        ???
     }
   }
 }

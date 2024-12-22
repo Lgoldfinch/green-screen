@@ -3,8 +3,8 @@ package com.green.screen.analytics.engine.domain
 import cats.Show
 import cats.syntax.all.*
 import com.green.screen.analytics.engine.domain.common.CreatedAt.*
-import com.green.screen.analytics.engine.domain.common.{CreatedAt, nesDecoder}
-import com.green.screen.analytics.engine.domain.companies.{CompanyName, CompanyUuid}
+import com.green.screen.analytics.engine.domain.common.{ CreatedAt, nesDecoder }
+import com.green.screen.analytics.engine.domain.companies.{ CompanyName, CompanyUuid }
 import com.green.screen.analytics.engine.domain.companies.CompanyUuid.companyUuidCodec
 import com.green.screen.analytics.engine.domain.transactions.TransactionAmount.transactionAmountCodec
 import com.green.screen.analytics.engine.domain.transactions.TransactionUuid.*
@@ -24,8 +24,7 @@ object transactions:
   object TransactionUuid {
     def apply(uuid: UUID): TransactionUuid = uuid
 
-    extension (t: TransactionUuid)
-      def value: UUID = t
+    extension (t: TransactionUuid) def value: UUID = t
 
     val transactionUuidCodec: Codec[TransactionUuid] = uuid.imap(TransactionUuid.apply)(_.value)
   }
@@ -39,8 +38,7 @@ object transactions:
       _.value
     )
 
-    extension (t: TransactionAmount)
-      def value: Double = t
+    extension (t: TransactionAmount) def value: Double = t
 
     implicit val transactionAmountDecoder: Decoder[TransactionAmount] = Decoder.decodeDouble.map(TransactionAmount(_))
   }
@@ -63,7 +61,7 @@ object transactions:
     def apply(nes: NonEmptyString): TransactionEntity = nes
 
     extension (entity: TransactionEntity) {
-      def value: NonEmptyString = entity
+      def value: NonEmptyString      = entity
       def toCompanyName: CompanyName = CompanyName(entity)
     }
 
@@ -76,4 +74,3 @@ object transactions:
     given transactionRequest: Decoder[CreateTransactionRequest] = deriveDecoder[CreateTransactionRequest]
   }
 end transactions
-

@@ -5,13 +5,15 @@ import scala.collection.immutable.Seq
 
 ThisBuild / organization := "com.green.screen"
 ThisBuild / scalaVersion := Version.ScalaVersion
+ThisBuild / version      := "1.0.0"
 
 lazy val root = (project in file("."))
   .enablePlugins(DockerPlugin, JavaServerAppPackaging)
   .settings(
   name := "green-screen",
     fork := true,
-  libraryDependencies ++= List.concat(
+    scalafmtOnCompile := true,
+    libraryDependencies ++= List.concat(
     CatsEffect,
     Circe,
     FlywayDb,
@@ -27,7 +29,7 @@ lazy val root = (project in file("."))
     testFrameworks += new TestFramework("weaver.framework.CatsEffect")
 )
   .settings(
-    Docker / packageName := packageName.value,
+    Docker / packageName := "green-screen",
     Docker / version := version.value,
     dockerBaseImage := "openjdk:21",
     dockerExposedPorts ++= Seq(8080)

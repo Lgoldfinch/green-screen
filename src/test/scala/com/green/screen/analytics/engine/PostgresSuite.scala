@@ -13,8 +13,8 @@ trait PostgresSuite extends ResourceSuite {
   implicit val logger: SelfAwareStructuredLogger[IO] = Slf4jLogger.getLogger[IO]
 
   val flushTables: List[Command[Void]] =
-    List("companies", "transactions").map {
-      table => sql"DELETE FROM #$table".command
+    List("companies", "transactions").map { table =>
+      sql"DELETE FROM #$table".command
     }
 
   type Res = Resource[IO, Session[IO]]

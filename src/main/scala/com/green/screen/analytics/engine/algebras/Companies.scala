@@ -2,10 +2,10 @@ package com.green.screen.analytics.engine.algebras
 
 import cats.data.NonEmptyList
 import cats.effect.*
-import cats.effect.kernel.{Concurrent, MonadCancelThrow, Resource}
+import cats.effect.kernel.{ Concurrent, MonadCancelThrow, Resource }
 import cats.syntax.all.*
 import com.green.screen.analytics.engine.algebras.CompaniesSQL.*
-import com.green.screen.analytics.engine.domain.companies.{CompanyName, *}
+import com.green.screen.analytics.engine.domain.companies.{ CompanyName, * }
 import com.green.screen.analytics.engine.domain.companies.Company.companyCodec
 import com.green.screen.analytics.engine.domain.companies.CompanyUuid.companyUuidCodec
 import com.green.screen.analytics.engine.domain.companies.CompanyName.*
@@ -42,13 +42,16 @@ object Companies:
       )
     }
 
-    override def getCompany(companyUuid: CompanyUuid): F[Option[Company]] = resource.use(_.prepare(queryGetCompany).flatMap(
-      _.option(companyUuid)
+    override def getCompany(companyUuid: CompanyUuid): F[Option[Company]] = resource.use(
+      _.prepare(queryGetCompany).flatMap(
+        _.option(companyUuid)
       )
     )
 
     override def getCompanyUuidByName(companyName: CompanyName): F[Option[(CompanyUuid)]] = resource.use(
-      _.prepare(queryGetUuidByName).flatMap(_.option((CompanyName(companyName.value), CompanyName(companyName.value))).map(_.map(_._1)))
+      _.prepare(queryGetUuidByName).flatMap(
+        _.option((CompanyName(companyName.value), CompanyName(companyName.value))).map(_.map(_._1))
+      )
     )
 
 end Companies
@@ -64,13 +67,11 @@ object CompaniesSQL:
          INSERT INTO companies VALUES ($companyUuidCodec, $companyNameCodec, $co2EmissionsCodec, to_tsvector($text))
        """.command
 
-
   val queryGetCompany: Query[CompanyUuid, Company] =
     sql"""
          SELECT uuid, name, co2emissions FROM companies
          WHERE uuid = $companyUuidCodec
          """.query(companyCodec)
-
 
   val queryGetUuidByName: Query[(CompanyName, CompanyName), (CompanyUuid, Float)] =
     sql"""
@@ -81,4 +82,3 @@ object CompaniesSQL:
          """.query(companyUuidCodec ~ float4)
 
 end CompaniesSQL
-

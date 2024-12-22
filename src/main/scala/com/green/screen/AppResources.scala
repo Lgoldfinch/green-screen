@@ -1,6 +1,6 @@
 package com.green.screen
 
-import cats.effect.{MonadCancelThrow, Resource}
+import cats.effect.{ MonadCancelThrow, Resource }
 import cats.effect.kernel.Temporal
 import cats.effect.std.Console
 import fs2.io.net.Network
@@ -13,13 +13,13 @@ import natchez.Trace.Implicits.noop
 
 sealed abstract class AppResources[F[_]](
     val postgres: Resource[F, Session[F]]
-                                        )
+)
 
 object AppResources {
-  def make[F[_] : Console : Logger : MonadCancelThrow : Network : Temporal]: Resource[F, AppResources[F]] = {
+  def make[F[_]: Console: Logger: MonadCancelThrow: Network: Temporal]: Resource[F, AppResources[F]] = {
     def checkPostgresConnection(
-                                 postgres: Resource[F, Session[F]]
-                               ): F[Unit] = {
+        postgres: Resource[F, Session[F]]
+    ): F[Unit] = {
       postgres.use { session =>
         session.unique(sql"select version();".query(text)).flatMap { v =>
           Logger[F].info(s"Connected to Postgres $v.")
@@ -27,16 +27,18 @@ object AppResources {
       }
     }
 
-      def mkPostgresResource: Resource[F, Resource[F, Session[F]]] =
-        Session.pooled[F](
+    def mkPostgresResource: Resource[F, Resource[F, Session[F]]] =
+      Session
+        .pooled[F](
           host = "localhost",
           port = 5432,
           user = "postgres",
           database = "green-screen-postgres",
           password = Some("password"),
           max = 16
-        ).evalTap(checkPostgresConnection)
+        )
+        .evalTap(checkPostgresConnection)
 
-      mkPostgresResource.map(new AppResources[F](_) {})
+    mkPostgresResource.map(new AppResources[F](_) {})
   }
 }

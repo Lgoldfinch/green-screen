@@ -13,8 +13,7 @@ object common {
   object CreatedAt {
     def apply(f: Instant): CreatedAt = f
 
-    extension (time: CreatedAt)
-      def value: Instant = time
+    extension (time: CreatedAt) def value: Instant = time
 
     implicit val createdAtDecoder: Decoder[CreatedAt] = Decoder.decodeInstant.map(CreatedAt(_))
     implicit val createdAtEncoder: Encoder[CreatedAt] = _.asJson

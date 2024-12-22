@@ -1,6 +1,6 @@
 package com.green.screen.analytics.engine.domain
 
-import cats.{Eq, Show}
+import cats.{ Eq, Show }
 import cats.syntax.all.*
 import com.green.screen.analytics.engine.domain.companies.*
 import com.green.screen.analytics.engine.domain.companies.CompanyCo2EmissionsMetricTonnes.*
@@ -19,18 +19,16 @@ object companies:
   object CompanyUuid {
     def apply(uuid: UUID): CompanyUuid = uuid
 
-    extension (cUuid: CompanyUuid)
-      def value: CompanyUuid = cUuid
+    extension (cUuid: CompanyUuid) def value: CompanyUuid = cUuid
 
-    val companyUuidCodec: Codec[CompanyUuid] = uuid.imap(CompanyUuid.apply)(_.value)
+    val companyUuidCodec: Codec[CompanyUuid]     = uuid.imap(CompanyUuid.apply)(_.value)
     implicit val ordering: Ordering[CompanyUuid] = _.compareTo(_)
-    
+
     implicit val eq: Eq[CompanyUuid] = Eq.fromUniversalEquals
-    
+
   }
 
   opaque type CompanyName = NonEmptyString
-
 
   object CompanyName {
     def apply(nes: NonEmptyString): CompanyName = nes
@@ -47,12 +45,11 @@ object companies:
   object CompanyCo2EmissionsMetricTonnes {
     def apply(f: Float): CompanyCo2EmissionsMetricTonnes = f
 
-    extension (co2: CompanyCo2EmissionsMetricTonnes)
-      def value: Float = co2
+    extension (co2: CompanyCo2EmissionsMetricTonnes) def value: Float = co2
 
-    val co2EmissionsCodec: Codec[CompanyCo2EmissionsMetricTonnes] = float4.imap(CompanyCo2EmissionsMetricTonnes.apply)(_.value)
+    val co2EmissionsCodec: Codec[CompanyCo2EmissionsMetricTonnes] =
+      float4.imap(CompanyCo2EmissionsMetricTonnes.apply)(_.value)
   }
-
 
   final case class Company(uuid: CompanyUuid, name: CompanyName, co2Emissions: CompanyCo2EmissionsMetricTonnes)
 
@@ -61,8 +58,7 @@ object companies:
       (companyUuidCodec, companyNameCodec, co2EmissionsCodec).tupled.imap(Company.apply) {
         case Company(uuid, name, co2Emissions) => (uuid, name, co2Emissions)
       }
-    
+
     implicit val companyShow: Show[Company] = Show.show(_.toString)
   }
 end companies
-

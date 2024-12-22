@@ -8,14 +8,13 @@ package object generators:
   private val nonEmptyStringGen: Gen[NonEmptyString] =
     for {
       char <- Gen.alphaChar
-       str <- Gen.alphaStr
+      str  <- Gen.alphaStr
     } yield NonEmptyString.unsafeFrom(str ++ char.toString)
 
   def nonEmptyStringGen[A](f: NonEmptyString => A): Gen[A] = nonEmptyStringGen.map(f)
-  
+
   def nelGen[A](a: Gen[A]): Gen[NonEmptyList[A]] = for {
     head <- a
     tail <- Gen.listOf(a)
   } yield NonEmptyList.of(head, tail*)
 end generators
-
