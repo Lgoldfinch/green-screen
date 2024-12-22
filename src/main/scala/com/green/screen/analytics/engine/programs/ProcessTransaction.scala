@@ -6,22 +6,24 @@ import com.green.screen.analytics.engine.algebras.UserTransactions
 import com.green.screen.analytics.engine.domain.companies.*
 import com.green.screen.analytics.engine.domain.transactions.{CreateTransactionRequest, TransactionUuid, UserTransaction}
 import cats.syntax.all.*
-
+import com.green.screen.analytics.engine.domain.transactions.TransactionEntity._
 import java.util.UUID
 import scala.util.control.NoStackTrace
 import ProcessTransaction.CompanyNotFound
-import CompanyName._
+import CompanyName.*
+import com.green.screen.effects.GenUUID
 
-class ProcessTransaction[F[_]: MonadThrow](companies: Companies[F], transactions: UserTransactions[F]):
+class ProcessTransaction[F[_]: MonadThrow: GenUUID](companies: Companies[F], transactions: UserTransactions[F]):
   def createTransaction(request: CreateTransactionRequest): F[Unit] = {
 
-    val companyName = CompanyName(request.name.value)
+    val companyName = request.name.toCompanyName
 
     for {
       companyUuidOpt <- companies.getCompanyUuidByName(companyName)
       companyUuid <- companyUuidOpt.liftTo[F](CompanyNotFound(companyName))
+      transactionUuid <- GenUUID[F].make.map(TransactionUuid.apply)
       transaction = UserTransaction(
-        TransactionUuid(UUID.randomUUID()),
+        transactionUuid,
         companyUuid,
         request.amount
       )

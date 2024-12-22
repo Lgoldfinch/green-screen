@@ -4,7 +4,7 @@ import cats.Show
 import cats.syntax.all.*
 import com.green.screen.analytics.engine.domain.common.CreatedAt.*
 import com.green.screen.analytics.engine.domain.common.{CreatedAt, nesDecoder}
-import com.green.screen.analytics.engine.domain.companies.CompanyUuid
+import com.green.screen.analytics.engine.domain.companies.{CompanyName, CompanyUuid}
 import com.green.screen.analytics.engine.domain.companies.CompanyUuid.companyUuidCodec
 import com.green.screen.analytics.engine.domain.transactions.TransactionAmount.transactionAmountCodec
 import com.green.screen.analytics.engine.domain.transactions.TransactionUuid.*
@@ -62,8 +62,10 @@ object transactions:
   object TransactionEntity {
     def apply(nes: NonEmptyString): TransactionEntity = nes
 
-    extension (entity: TransactionEntity)
+    extension (entity: TransactionEntity) {
       def value: NonEmptyString = entity
+      def toCompanyName: CompanyName = CompanyName(entity)
+    }
 
     implicit val transactionEntityDecoder: Decoder[TransactionEntity] = nesDecoder.map(TransactionEntity.apply)
   }
