@@ -23,6 +23,7 @@ object CompaniesSuite extends PostgresSuite:
     val companiesAlgebra: Companies[IO] = Companies.make[IO](postgres)
     val gen = for {
       company1 <- companyGen
+      company2 <- companyGen
     } yield (company1, company2)
 
     forall(gen) { case (company1, company2) =>

@@ -8,13 +8,14 @@ import com.green.screen.analytics.engine.domain.companies.{ CompanyName, Company
 import com.green.screen.analytics.engine.domain.companies.CompanyUuid.companyUuidCodec
 import com.green.screen.analytics.engine.domain.transactions.TransactionAmount.transactionAmountCodec
 import com.green.screen.analytics.engine.domain.transactions.TransactionUuid.*
+import com.green.screen.analytics.engine.domain.users.UserUuid
 import eu.timepit.refined.types.string.NonEmptyString
 import io.circe
 import io.circe.*
 import skunk.Codec
 import skunk.codec.all.*
 import io.circe.generic.semiauto.*
-
+import UserUuid._
 import java.util.UUID
 
 object transactions:
@@ -44,12 +45,19 @@ object transactions:
   }
 
   // Prefixed User here to differentiate from the Transaction class from Skunk.
-  final case class UserTransaction(uuid: TransactionUuid, companyUuid: CompanyUuid, amount: TransactionAmount)
+  final case class UserTransaction(
+      uuid: TransactionUuid,
+      companyUuid: CompanyUuid,
+      userUuid: UserUuid,
+      amount: TransactionAmount
+  )
 
   object UserTransaction {
     val transactionCodec: Codec[UserTransaction] =
-      (transactionUuidCodec, companyUuidCodec, transactionAmountCodec).tupled.imap(UserTransaction.apply) {
-        case UserTransaction(uuid, companyUuid, amount) => (uuid, companyUuid, amount)
+      (transactionUuidCodec, companyUuidCodec, userUuidCodec, transactionAmountCodec).tupled.imap(
+        UserTransaction.apply
+      ) { case UserTransaction(uuid, companyUuid, userUuid, amount) =>
+        (uuid, companyUuid, userUuid, amount)
       }
 
     implicit val transactionShow: Show[UserTransaction] = Show.fromToString
@@ -68,7 +76,12 @@ object transactions:
     implicit val transactionEntityDecoder: Decoder[TransactionEntity] = nesDecoder.map(TransactionEntity.apply)
   }
 
-  final case class CreateTransactionRequest(name: TransactionEntity, amount: TransactionAmount, createdAt: CreatedAt)
+  final case class CreateTransactionRequest(
+      name: TransactionEntity,
+      amount: TransactionAmount,
+      userUuid: UserUuid,
+      createdAt: CreatedAt
+  )
 
   object CreateTransactionRequest {
     given transactionRequest: Decoder[CreateTransactionRequest] = deriveDecoder[CreateTransactionRequest]

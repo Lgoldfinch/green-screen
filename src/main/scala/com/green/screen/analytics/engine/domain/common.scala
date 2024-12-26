@@ -6,7 +6,6 @@ import io.circe.syntax.*
 import eu.timepit.refined.types.string.NonEmptyString
 
 object common {
-
   implicit val nesDecoder: Decoder[NonEmptyString] = Decoder.decodeString.emap(NonEmptyString.from)
 
   opaque type CreatedAt = Instant

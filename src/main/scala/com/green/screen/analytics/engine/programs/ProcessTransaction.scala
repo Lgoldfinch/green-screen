@@ -29,6 +29,7 @@ class ProcessTransaction[F[_]: MonadThrow: GenUUID](companies: Companies[F], tra
       transaction = UserTransaction(
         transactionUuid,
         companyUuid,
+        request.userUuid,
         request.amount
       )
       _ <- transactions.createTransaction(transaction)

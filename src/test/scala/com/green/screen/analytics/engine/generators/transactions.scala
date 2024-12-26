@@ -2,8 +2,10 @@ package com.green.screen.analytics.engine.generators
 
 import com.green.screen.analytics.engine.domain.companies.CompanyUuid
 import com.green.screen.analytics.engine.domain.transactions.*
+import com.green.screen.analytics.engine.domain.users.UserUuid
 import org.scalacheck.Gen
 import companies.companyUuidGen
+import com.green.screen.analytics.engine.generators.users.*
 
 object transactions {
   val transactionUuidGen: Gen[TransactionUuid] = Gen.uuid.map(TransactionUuid.apply)
@@ -13,11 +15,12 @@ object transactions {
   val transactionGen: Gen[UserTransaction] = for {
     transactionUuid   <- transactionUuidGen
     companyUuid       <- companyUuidGen
+    userUuid          <- userUuidGen
     transactionAmount <- transactionAmountGen
-  } yield UserTransaction(transactionUuid, companyUuid, transactionAmount)
+  } yield UserTransaction(transactionUuid, companyUuid, userUuid, transactionAmount)
 
-  def transactionGen(companyUuid: CompanyUuid): Gen[UserTransaction] = for {
+  def transactionGen(companyUuid: CompanyUuid, userUuid: UserUuid): Gen[UserTransaction] = for {
     transactionUuid   <- transactionUuidGen
     transactionAmount <- transactionAmountGen
-  } yield UserTransaction(transactionUuid, companyUuid, transactionAmount)
+  } yield UserTransaction(transactionUuid, companyUuid, userUuid, transactionAmount)
 }
