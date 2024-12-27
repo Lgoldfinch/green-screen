@@ -7,7 +7,7 @@ object companies:
   val companyUuidGen: Gen[CompanyUuid] = Gen.uuid.map(CompanyUuid.apply)
   val companyNameGen: Gen[CompanyName] = nonEmptyStringGen(CompanyName.apply)
   val co2EmissionGen: Gen[CompanyCo2EmissionsMetricTonnes] =
-    Gen.double.map(d => CompanyCo2EmissionsMetricTonnes(d.toFloat))
+    Gen.double.map(CompanyCo2EmissionsMetricTonnes.apply)
 
   val companyGen: Gen[Company] = for {
     uuid        <- companyUuidGen

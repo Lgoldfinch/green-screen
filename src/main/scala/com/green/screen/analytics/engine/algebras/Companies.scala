@@ -69,7 +69,7 @@ object CompaniesSQL:
 
   val queryGetCompany: Query[CompanyUuid, Company] =
     sql"""
-         SELECT uuid, name, co2emissions FROM companies
+         SELECT uuid, name, co2_emissions FROM companies
          WHERE uuid = $companyUuidCodec
          """.query(companyCodec)
 

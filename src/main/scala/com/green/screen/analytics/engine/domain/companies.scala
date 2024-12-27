@@ -40,15 +40,15 @@ object companies:
     val companyNameCodec: Codec[CompanyName] = nesCodec.imap(CompanyName.apply)(_.value)
   }
 
-  opaque type CompanyCo2EmissionsMetricTonnes = Float
+  opaque type CompanyCo2EmissionsMetricTonnes = Double
 
   object CompanyCo2EmissionsMetricTonnes {
-    def apply(f: Float): CompanyCo2EmissionsMetricTonnes = f
+    def apply(f: Double): CompanyCo2EmissionsMetricTonnes = f
 
-    extension (co2: CompanyCo2EmissionsMetricTonnes) def value: Float = co2
+    extension (co2: CompanyCo2EmissionsMetricTonnes) def value: Double = co2
 
     val co2EmissionsCodec: Codec[CompanyCo2EmissionsMetricTonnes] =
-      float4.imap(CompanyCo2EmissionsMetricTonnes.apply)(_.value)
+      float8.imap(CompanyCo2EmissionsMetricTonnes.apply)(_.value)
   }
 
   final case class Company(uuid: CompanyUuid, name: CompanyName, co2Emissions: CompanyCo2EmissionsMetricTonnes)

@@ -2,7 +2,7 @@ CREATE TABLE IF NOT EXISTS companies
 (
     uuid  UUID PRIMARY KEY,
     name TEXT NOT NULL,
-    co2Emissions FLOAT4
+    co2_emissions FLOAT8
 );
 
 CREATE TABLE IF NOT EXISTS users
