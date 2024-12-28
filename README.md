@@ -17,3 +17,8 @@ sbt test
 ## sbt-tpolecat
 
 This template uses the `sbt-tpolecat` sbt plugin to set Scala compiler options to recommended defaults. If you want to change these defaults or find out about the different modes the plugin can operate in you can find out [here](https://github.com/typelevel/sbt-tpolecat/).
+
+Need to rank companies based on emissions. Do we just order them by emissions? We can probably order by emissions for now. 
+
+For a user, we add all scores for a users transactions and give a rating. 
+

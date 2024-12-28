@@ -17,4 +17,8 @@ package object generators:
     head <- a
     tail <- Gen.listOf(a)
   } yield NonEmptyList.of(head, tail*)
+
+  def sequenceListGen[A, B](list: List[A])(f: A => Gen[B]): Gen[List[B]] = Gen.sequence[List[B], B](
+    list.map(item => f(item))
+  )
 end generators
