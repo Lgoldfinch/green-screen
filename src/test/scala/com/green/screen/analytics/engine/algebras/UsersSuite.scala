@@ -8,8 +8,8 @@ import com.green.screen.analytics.engine.{ PostgresSuite, ResourceSuite }
 import com.green.screen.analytics.engine.generators.*
 import cats.syntax.all.*
 import com.green.screen.analytics.engine.domain.UserScore
-
 import scala.math.BigDecimal.RoundingMode
+import eu.timepit.refined.types.all.*
 
 object UsersSuite extends PostgresSuite:
   test("Should be able to insert and get a user") { postgres =>
@@ -44,7 +44,7 @@ object UsersSuite extends PostgresSuite:
           .decimal(companies.map(company => company.co2Emissions.value).toList.sum / companies.length)
           .setScale(2, RoundingMode.HALF_UP)
       } yield expect.same(
-        BigDecimal.decimal(score.value),
+        BigDecimal.decimal(score.value.value),
         expectedScore
       )
     }
@@ -57,9 +57,10 @@ object UsersSuite extends PostgresSuite:
       for {
         _     <- usersAlgebra.createUser(user)
         score <- usersAlgebra.getScore(user.uuid)
+        expectedScore = UserScore(NonNegDouble.unsafeFrom(0))
       } yield expect.same(
         score,
-        UserScore(0)
+        expectedScore
       )
     }
   }

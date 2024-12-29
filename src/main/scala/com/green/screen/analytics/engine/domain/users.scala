@@ -5,8 +5,9 @@ import io.circe.{ Decoder, Encoder }
 import skunk.Codec
 import skunk.codec.all.*
 import UserUuid.*
-
+import eu.timepit.refined.types.all.*
 import java.util.UUID
+import com.green.screen.common.domain.skunks.*
 
 final case class User(uuid: UserUuid)
 
@@ -18,12 +19,13 @@ object User {
   implicit val userShow: Show[User] = Show.fromToString
 }
 
-opaque type UserScore = Double
-object UserScore {
-  def apply(value: Double): UserScore            = value
-  extension (value: UserScore) def value: Double = value
+opaque type UserScore = NonNegDouble
 
-  val userScoreCodec: Codec[UserScore]       = float8.imap(UserScore.apply)(_.value)
+object UserScore {
+  def apply(value: NonNegDouble): UserScore            = value
+  extension (value: UserScore) def value: NonNegDouble = value
+
+  val userScoreCodec: Codec[UserScore]       = nonNegDoubleCodec.imap(UserScore.apply)(_.value)
   implicit val userScore: Encoder[UserScore] = Encoder.encodeDouble.contramap(_.value)
 }
 
