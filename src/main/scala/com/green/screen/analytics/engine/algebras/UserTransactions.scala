@@ -4,10 +4,9 @@ import cats.effect.kernel.{ Concurrent, MonadCancelThrow, Resource }
 import cats.syntax.all.*
 import com.green.screen.analytics.engine.*
 import com.green.screen.analytics.engine.algebras.TransactionsSQL.*
-import com.green.screen.analytics.engine.domain.companies.CompanyUuid
-import com.green.screen.analytics.engine.domain.companies.CompanyUuid.companyUuidCodec
-import com.green.screen.analytics.engine.domain.transactions.*
-import com.green.screen.analytics.engine.domain.transactions.UserTransaction.transactionCodec
+import com.green.screen.analytics.engine.domain.*
+import com.green.screen.analytics.engine.domain.CompanyUuid.companyUuidCodec
+import com.green.screen.analytics.engine.domain.UserTransaction.transactionCodec
 import org.typelevel.log4cats.Logger
 import skunk.*
 import skunk.syntax.all.*

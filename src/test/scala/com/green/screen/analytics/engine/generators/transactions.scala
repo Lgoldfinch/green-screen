@@ -1,8 +1,6 @@
 package com.green.screen.analytics.engine.generators
 
-import com.green.screen.analytics.engine.domain.companies.CompanyUuid
-import com.green.screen.analytics.engine.domain.transactions.*
-import com.green.screen.analytics.engine.domain.users.UserUuid
+import com.green.screen.analytics.engine.domain.*
 import org.scalacheck.Gen
 import companies.companyUuidGen
 import com.green.screen.analytics.engine.generators.users.*

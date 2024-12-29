@@ -2,7 +2,7 @@ package com.green.screen.analytics.engine
 
 import cats.effect.Concurrent
 import cats.syntax.all.*
-import com.green.screen.analytics.engine.domain.transactions.CreateTransactionRequest
+import com.green.screen.analytics.engine.domain.CreateTransactionRequest
 import com.green.screen.analytics.engine.programs.ProcessTransaction
 import org.http4s.HttpRoutes
 import org.http4s.circe.CirceEntityDecoder.*
@@ -10,8 +10,8 @@ import org.http4s.dsl.Http4sDsl
 import org.typelevel.log4cats.Logger
 import com.green.screen.analytics.engine.programs.ProcessTransaction.CompanyNotFound
 
-object AnalyticsEngineRoutes {
-  def analyticsRoutes[F[_]: Concurrent: Logger](processTransaction: ProcessTransaction[F]): HttpRoutes[F] = {
+object TransactionRoutes:
+  def routes[F[_]: Concurrent: Logger](processTransaction: ProcessTransaction[F]): HttpRoutes[F] = {
     val dsl = new Http4sDsl[F] {}
     import dsl.*
     HttpRoutes.of[F] { case req @ POST -> Root / "transactions" =>
@@ -23,8 +23,6 @@ object AnalyticsEngineRoutes {
               NotFound(err.getMessage)
           }
         )
-//      case GET -> Root / "transactions" / UUIDVar(userUuid) =>
-
     }
   }
-}
+end TransactionRoutes

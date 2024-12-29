@@ -5,11 +5,11 @@ import cats.effect.*
 import cats.effect.kernel.{ Concurrent, MonadCancelThrow, Resource }
 import cats.syntax.all.*
 import com.green.screen.analytics.engine.algebras.CompaniesSQL.*
-import com.green.screen.analytics.engine.domain.companies.{ CompanyName, * }
-import com.green.screen.analytics.engine.domain.companies.Company.companyCodec
-import com.green.screen.analytics.engine.domain.companies.CompanyUuid.companyUuidCodec
-import com.green.screen.analytics.engine.domain.companies.CompanyName.*
-import com.green.screen.analytics.engine.domain.companies.CompanyCo2EmissionsMetricTonnes.co2EmissionsCodec
+import com.green.screen.analytics.engine.domain.*
+import com.green.screen.analytics.engine.domain.Company.companyCodec
+import com.green.screen.analytics.engine.domain.CompanyUuid.companyUuidCodec
+import com.green.screen.analytics.engine.domain.CompanyName.companyNameCodec
+import com.green.screen.analytics.engine.domain.CompanyCo2EmissionsMetricTonnes.co2EmissionsCodec
 import skunk.*
 import skunk.syntax.all.*
 import skunk.codec.all.*

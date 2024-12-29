@@ -6,7 +6,7 @@ import org.http4s.HttpRoutes
 import org.http4s.dsl.Http4sDsl
 import org.typelevel.log4cats.Logger
 import cats.syntax.all.*
-import com.green.screen.analytics.engine.domain.users.UserUuid
+import com.green.screen.analytics.engine.domain.UserUuid
 import org.http4s.circe.CirceEntityCodec.circeEntityEncoder
 
 object UserRoutes:

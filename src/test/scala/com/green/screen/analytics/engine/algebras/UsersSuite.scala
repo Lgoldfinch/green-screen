@@ -8,7 +8,6 @@ import com.green.screen.analytics.engine.{ PostgresSuite, ResourceSuite }
 import com.green.screen.analytics.engine.generators.*
 import cats.syntax.all._
 import scala.math.BigDecimal.RoundingMode
-import com.green.screen.analytics.engine.domain.users.UserScore.*
 
 object UsersSuite extends PostgresSuite:
   test("Should be able to insert and get a user") { postgres =>

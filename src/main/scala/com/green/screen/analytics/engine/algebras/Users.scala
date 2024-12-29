@@ -1,15 +1,15 @@
 package com.green.screen.analytics.engine.algebras
 
 import cats.effect.kernel.{ Concurrent, MonadCancelThrow, Resource }
-import com.green.screen.analytics.engine.domain.users.*
+import com.green.screen.analytics.engine.domain.*
 import cats.syntax.all.*
 
 import skunk.Session
 import skunk.*
 import skunk.syntax.all.*
-import com.green.screen.analytics.engine.domain.users.UserUuid.*
-import com.green.screen.analytics.engine.domain.users.User.*
-import com.green.screen.analytics.engine.domain.users.UserScore.*
+import com.green.screen.analytics.engine.domain.UserUuid.*
+import com.green.screen.analytics.engine.domain.User.*
+import com.green.screen.analytics.engine.domain.UserScore.*
 import UsersSQL.*
 
 trait Users[F[_]]:

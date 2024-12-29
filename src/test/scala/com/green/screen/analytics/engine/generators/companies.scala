@@ -1,6 +1,6 @@
 package com.green.screen.analytics.engine.generators
 
-import com.green.screen.analytics.engine.domain.companies.*
+import com.green.screen.analytics.engine.domain.*
 import org.scalacheck.Gen
 
 object companies:

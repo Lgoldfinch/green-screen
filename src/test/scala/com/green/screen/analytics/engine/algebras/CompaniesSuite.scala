@@ -1,7 +1,7 @@
 package com.green.screen.analytics.engine.algebras
 
 import cats.effect.*
-import com.green.screen.analytics.engine.domain.companies.Company.companyShow
+import com.green.screen.analytics.engine.domain.Company.companyShow
 import com.green.screen.analytics.engine.generators.*
 import com.green.screen.analytics.engine.generators.companies.companyGen
 import com.green.screen.analytics.engine.{ PostgresSuite, ResourceSuite }

@@ -3,14 +3,9 @@ package com.green.screen.analytics.engine.programs
 import cats.MonadThrow
 import com.green.screen.analytics.engine.algebras.Companies
 import com.green.screen.analytics.engine.algebras.UserTransactions
-import com.green.screen.analytics.engine.domain.companies.*
-import com.green.screen.analytics.engine.domain.transactions.{
-  CreateTransactionRequest,
-  TransactionUuid,
-  UserTransaction
-}
+import com.green.screen.analytics.engine.domain.*
 import cats.syntax.all.*
-import com.green.screen.analytics.engine.domain.transactions.TransactionEntity._
+import com.green.screen.analytics.engine.domain.TransactionEntity._
 import java.util.UUID
 import scala.util.control.NoStackTrace
 import ProcessTransaction.CompanyNotFound
