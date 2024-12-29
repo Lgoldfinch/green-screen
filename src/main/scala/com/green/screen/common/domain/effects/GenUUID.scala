@@ -1,4 +1,4 @@
-package com.green.screen.effects
+package com.green.screen.common.domain.effects
 
 import cats.ApplicativeThrow
 import cats.effect.Sync

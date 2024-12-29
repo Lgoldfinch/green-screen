@@ -1,9 +1,9 @@
-package com.green.screen.analytics.engine
+package com.green.screen.analytics.engine.routes
 
 import cats.effect.Concurrent
+import cats.syntax.all.*
 import com.green.screen.analytics.engine.programs.Programs
 import org.http4s.HttpRoutes
-import cats.syntax.all.*
 import org.typelevel.log4cats.Logger
 
 object Routes:

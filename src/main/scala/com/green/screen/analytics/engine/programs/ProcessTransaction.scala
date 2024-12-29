@@ -10,7 +10,7 @@ import java.util.UUID
 import scala.util.control.NoStackTrace
 import ProcessTransaction.CompanyNotFound
 import CompanyName.*
-import com.green.screen.effects.GenUUID
+import com.green.screen.common.domain.effects.GenUUID
 
 class ProcessTransaction[F[_]: MonadThrow: GenUUID](companies: Companies[F], transactions: UserTransactions[F]):
   def createTransaction(request: CreateTransactionRequest): F[Unit] = {

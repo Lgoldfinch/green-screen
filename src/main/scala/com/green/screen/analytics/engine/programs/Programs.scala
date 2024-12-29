@@ -2,7 +2,7 @@ package com.green.screen.analytics.engine.programs
 
 import cats.MonadThrow
 import com.green.screen.analytics.engine.algebras.Algebras
-import com.green.screen.effects.GenUUID
+import com.green.screen.common.domain.effects.GenUUID
 
 trait Programs[F[_]]:
   val getUserScores: GetUserScores[F]

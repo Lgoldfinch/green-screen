@@ -1,14 +1,14 @@
-package com.green.screen.analytics.engine
+package com.green.screen.analytics.engine.routes
 
 import cats.effect.Concurrent
 import cats.syntax.all.*
 import com.green.screen.analytics.engine.domain.CreateTransactionRequest
 import com.green.screen.analytics.engine.programs.ProcessTransaction
+import com.green.screen.analytics.engine.programs.ProcessTransaction.CompanyNotFound
 import org.http4s.HttpRoutes
 import org.http4s.circe.CirceEntityDecoder.*
 import org.http4s.dsl.Http4sDsl
 import org.typelevel.log4cats.Logger
-import com.green.screen.analytics.engine.programs.ProcessTransaction.CompanyNotFound
 
 object TransactionRoutes:
   def routes[F[_]: Concurrent: Logger](processTransaction: ProcessTransaction[F]): HttpRoutes[F] = {

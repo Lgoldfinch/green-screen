@@ -6,6 +6,7 @@ import com.comcast.ip4s.{ ipv4, port }
 import com.green.screen.analytics.engine.*
 import com.green.screen.analytics.engine.algebras.Algebras
 import com.green.screen.analytics.engine.programs.*
+import com.green.screen.analytics.engine.routes.Routes
 import com.green.screen.middlewares.ErrorHandlingMiddleware
 import org.http4s.ember.server.EmberServerBuilder
 import org.http4s.server.middleware.Logger
