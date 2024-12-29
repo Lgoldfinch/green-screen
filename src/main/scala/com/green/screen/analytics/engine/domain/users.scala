@@ -29,8 +29,8 @@ object UserScore {
 
 opaque type UserUuid = UUID
 object UserUuid {
-  def apply(uuid: UUID): UserUuid                = uuid
-  extension (uuid: UserUuid) def value: UserUuid = uuid
+  def apply(uuid: UUID): UserUuid            = uuid
+  extension (uuid: UserUuid) def value: UUID = uuid
 
   val userUuidCodec: Codec[UserUuid] =
     uuid.imap(UserUuid.apply)(_.value)

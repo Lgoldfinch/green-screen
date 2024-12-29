@@ -6,7 +6,9 @@ import com.green.screen.analytics.engine.generators.transactions.transactionGen
 import com.green.screen.analytics.engine.generators.users.*
 import com.green.screen.analytics.engine.{ PostgresSuite, ResourceSuite }
 import com.green.screen.analytics.engine.generators.*
-import cats.syntax.all._
+import cats.syntax.all.*
+import com.green.screen.analytics.engine.domain.UserScore
+
 import scala.math.BigDecimal.RoundingMode
 
 object UsersSuite extends PostgresSuite:
@@ -44,6 +46,20 @@ object UsersSuite extends PostgresSuite:
       } yield expect.same(
         BigDecimal.decimal(score.value),
         expectedScore
+      )
+    }
+  }
+
+  test("Should return 0 if there is no transaction data for the user") { postgres =>
+    val usersAlgebra: Users[IO] = Users.make[IO](postgres)
+
+    forall(userGen) { user =>
+      for {
+        _     <- usersAlgebra.createUser(user)
+        score <- usersAlgebra.getScore(user.uuid)
+      } yield expect.same(
+        score,
+        UserScore(0)
       )
     }
   }
