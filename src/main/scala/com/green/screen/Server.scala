@@ -3,9 +3,9 @@ package com.green.screen
 import cats.data.Kleisli
 import cats.effect.*
 import com.comcast.ip4s.{ ipv4, port }
-import com.green.screen.analytics.engine.TransactionRoutes
+import com.green.screen.analytics.engine.*
 import com.green.screen.analytics.engine.algebras.Algebras
-import com.green.screen.analytics.engine.programs.ProcessTransaction
+import com.green.screen.analytics.engine.programs.*
 import com.green.screen.middlewares.ErrorHandlingMiddleware
 import org.http4s.ember.server.EmberServerBuilder
 import org.http4s.server.middleware.Logger
@@ -18,13 +18,13 @@ object Server extends IOApp:
     (for {
       resources <- AppResources.make[IO]
       _         <- Resource.eval(SqlMigrator[IO]("jdbc:postgresql://localhost:5432/green-screen-postgres").run)
-      algebras           = Algebras.make[IO](resources.postgres)
-      processTransaction = ProcessTransaction[IO](algebras.companies, algebras.transactions)
-      httpApp            = TransactionRoutes.routes[IO](processTransaction).orNotFound
+      algebras = Algebras.make[IO](resources.postgres)
+      programs = Programs.make[IO](algebras)
+      routes   = Routes.make(programs).orNotFound
       httpAppWithLogging = Logger.httpApp[IO](
         logHeaders = true,
         logBody = true
-      )(httpApp)
+      )(routes)
       _ <-
         EmberServerBuilder
           .default[IO]

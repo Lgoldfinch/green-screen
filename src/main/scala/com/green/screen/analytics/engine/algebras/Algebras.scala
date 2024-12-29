@@ -6,6 +6,7 @@ import skunk.Session
 trait Algebras[F[_]]:
   val companies: Companies[F]
   val transactions: UserTransactions[F]
+  val users: Users[F]
 end Algebras
 
 object Algebras:
@@ -13,5 +14,6 @@ object Algebras:
     new Algebras[F] {
       override val companies: Companies[F]           = Companies.make[F](postgres)
       override val transactions: UserTransactions[F] = UserTransactions.make[F](postgres)
+      override val users: Users[F]                   = Users.make[F](postgres)
     }
 end Algebras

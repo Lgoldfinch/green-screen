@@ -13,6 +13,7 @@ object UserRoutes:
   def routes[F[_]: Concurrent: Logger](userScores: GetUserScores[F]): HttpRoutes[F] = {
     val dsl = new Http4sDsl[F] {}
     import dsl.*
+
     HttpRoutes.of[F] { case req @ GET -> Root / "users" / UUIDVar(userUuid) / "transactions" =>
       userScores.getScores(UserUuid(userUuid)).flatMap(Ok(_))
     }
