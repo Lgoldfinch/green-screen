@@ -2,16 +2,20 @@ package com.green.screen
 
 import org.flywaydb.core.Flyway
 import cats.effect.Sync
-import cats.syntax.all._
+import cats.syntax.all.*
+import com.green.screen.analytics.engine.config.DBConfig
 import org.typelevel.log4cats.Logger
 
-final class SqlMigrator[F[_]: Sync: Logger](url: String) {
+final class SqlMigrator[F[_]: Sync: Logger](dbConfig: DBConfig) {
   def run: F[Unit] = {
+
+    val url = s"jdbc:postgresql://${dbConfig.host}:${dbConfig.port}/${dbConfig.name}"
+
     for {
       _ <- Sync[F].blocking(
         Flyway
           .configure()
-          .dataSource(url, "postgres", "password")
+          .dataSource(url, dbConfig.dbUser, dbConfig.password)
           .load()
           .migrate()
       )

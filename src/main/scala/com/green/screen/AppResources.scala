@@ -9,6 +9,7 @@ import skunk.Session
 import skunk.codec.all.text
 import skunk.implicits.*
 import cats.syntax.all.*
+import com.green.screen.analytics.engine.config.DBConfig
 import natchez.Trace.Implicits.noop
 
 sealed abstract class AppResources[F[_]](
@@ -16,7 +17,9 @@ sealed abstract class AppResources[F[_]](
 )
 
 object AppResources {
-  def make[F[_]: Console: Logger: MonadCancelThrow: Network: Temporal]: Resource[F, AppResources[F]] = {
+  def make[F[_]: Console: Logger: MonadCancelThrow: Network: Temporal](
+      dbConfig: DBConfig
+  ): Resource[F, AppResources[F]] = {
     def checkPostgresConnection(
         postgres: Resource[F, Session[F]]
     ): F[Unit] = {
@@ -30,12 +33,12 @@ object AppResources {
     def mkPostgresResource: Resource[F, Resource[F, Session[F]]] =
       Session
         .pooled[F](
-          host = "localhost",
-          port = 5432,
-          user = "postgres",
-          database = "green-screen-postgres",
-          password = Some("password"),
-          max = 16
+          host = dbConfig.host,
+          port = dbConfig.port,
+          user = dbConfig.dbUser,
+          database = dbConfig.name,
+          password = Some(dbConfig.password),
+          max = dbConfig.poolSize
         )
         .evalTap(checkPostgresConnection)
 

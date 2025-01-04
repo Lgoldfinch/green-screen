@@ -5,6 +5,7 @@ import cats.effect.*
 import com.comcast.ip4s.{ ipv4, port }
 import com.green.screen.analytics.engine.*
 import com.green.screen.analytics.engine.algebras.Algebras
+import com.green.screen.analytics.engine.config.ConfigLoader
 import com.green.screen.analytics.engine.programs.*
 import com.green.screen.analytics.engine.routes.Routes
 import com.green.screen.middlewares.ErrorHandlingMiddleware
@@ -17,8 +18,9 @@ object Server extends IOApp:
   def run(args: List[String]): IO[ExitCode] = {
     implicit val logger: SelfAwareStructuredLogger[IO] = Slf4jLogger.getLogger[IO]
     (for {
-      resources <- AppResources.make[IO]
-      _         <- Resource.eval(SqlMigrator[IO]("jdbc:postgresql://localhost:5432/green-screen-postgres").run)
+      appConfig <- Resource.eval(ConfigLoader.loadConfig[IO])
+      resources <- AppResources.make[IO](appConfig.db)
+      _         <- Resource.eval(SqlMigrator[IO](appConfig.db).run)
       algebras = Algebras.make[IO](resources.postgres)
       programs = Programs.make[IO](algebras)
       routes   = Routes.make(programs).orNotFound
