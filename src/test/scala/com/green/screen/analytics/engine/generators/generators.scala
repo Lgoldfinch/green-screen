@@ -1,8 +1,11 @@
 package com.green.screen.analytics.engine
 
 import cats.data.NonEmptyList
+import com.green.screen.analytics.engine.domain.common.CreatedAt
 import eu.timepit.refined.types.all.*
 import org.scalacheck.Gen
+
+import java.time.Instant
 
 package object generators:
   def nelGen[A](a: Gen[A]): Gen[NonEmptyList[A]] = for {
@@ -26,4 +29,6 @@ package object generators:
   def sequenceListGen[A, B](list: List[A])(f: A => Gen[B]): Gen[List[B]] = Gen.sequence[List[B], B](
     list.map(item => f(item))
   )
+
+  val createdAtGen: Gen[CreatedAt] = Gen.long.map(l => CreatedAt(Instant.ofEpochSecond(l)))
 end generators

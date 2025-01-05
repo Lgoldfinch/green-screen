@@ -10,25 +10,25 @@ import weaver.*
 import weaver.scalacheck.*
 import com.green.screen.analytics.engine.generators.users.*
 
-object UserTransactionsSuite extends PostgresSuite:
+object OpenAPITransactionsSuite extends PostgresSuite:
   test("Should be able to create and retrieve transactions") { postgres =>
-    val companiesAlgebra: Companies[IO]               = Companies.make[IO](postgres)
-    val usersAlgebra: Users[IO]                       = Users.make[IO](postgres)
-    val userTransactionsAlgebra: UserTransactions[IO] = UserTransactions.make[IO](postgres)
+    val companiesAlgebra: Companies[IO]                     = Companies.make[IO](postgres)
+    val usersAlgebra: Users[IO]                             = Users.make[IO](postgres)
+    val openAPITransactionsAlgebra: OpenAPITransactions[IO] = OpenAPITransactions.make[IO](postgres)
 
     val gen = for {
       company     <- companyGen
       user        <- userGen
-      transaction <- transactionGen(company.uuid, user.uuid)
+      transaction <- openAPITransactionGen(company.uuid, user.uuid)
     } yield (company, transaction, user)
 
     forall(gen) { case (company, transaction, user) =>
       for {
         _            <- companiesAlgebra.createCompany(company)
         _            <- usersAlgebra.createUser(user)
-        _            <- userTransactionsAlgebra.createTransaction(transaction)
-        transactions <- userTransactionsAlgebra.getTransactions(company.uuid)
+        _            <- openAPITransactionsAlgebra.createTransaction(transaction)
+        transactions <- openAPITransactionsAlgebra.getTransactions(company.uuid)
       } yield expect.same(transactions, List(transaction))
     }
   }
-end UserTransactionsSuite
+end OpenAPITransactionsSuite

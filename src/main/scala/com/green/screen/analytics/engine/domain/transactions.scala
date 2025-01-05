@@ -41,23 +41,23 @@ object TransactionAmount {
   implicit val transactionAmountDecoder: Decoder[TransactionAmount] = Decoder.decodeDouble.map(TransactionAmount.apply)
 }
 
-// Prefixed User here to differentiate from the Transaction class from Skunk.
-final case class UserTransaction(
+final case class OpenAPITransaction(
     uuid: TransactionUuid,
     companyUuid: CompanyUuid,
     userUuid: UserUuid,
-    amount: TransactionAmount
+    amount: TransactionAmount,
+    createdAt: CreatedAt
 )
 
-object UserTransaction {
-  val transactionCodec: Codec[UserTransaction] =
-    (transactionUuidCodec, companyUuidCodec, userUuidCodec, transactionAmountCodec).tupled.imap(
-      UserTransaction.apply
-    ) { case UserTransaction(uuid, companyUuid, userUuid, amount) =>
-      (uuid, companyUuid, userUuid, amount)
+object OpenAPITransaction {
+  val openAPITransactionCodec: Codec[OpenAPITransaction] =
+    (transactionUuidCodec, companyUuidCodec, userUuidCodec, transactionAmountCodec, createdAtCodec).tupled.imap(
+      OpenAPITransaction.apply
+    ) { case OpenAPITransaction(uuid, companyUuid, userUuid, amount, createdAt) =>
+      (uuid, companyUuid, userUuid, amount, createdAt)
     }
 
-  implicit val transactionShow: Show[UserTransaction] = Show.fromToString
+  implicit val openAPITransactionShow: Show[OpenAPITransaction] = Show.fromToString
 }
 
 opaque type TransactionEntity = NonEmptyString

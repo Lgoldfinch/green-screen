@@ -2,7 +2,7 @@ package com.green.screen.analytics.engine.algebras
 
 import cats.effect.*
 import com.green.screen.analytics.engine.generators.companies.companyGen
-import com.green.screen.analytics.engine.generators.transactions.transactionGen
+import com.green.screen.analytics.engine.generators.transactions.openAPITransactionGen
 import com.green.screen.analytics.engine.generators.users.*
 import com.green.screen.analytics.engine.{ PostgresSuite, ResourceSuite }
 import com.green.screen.analytics.engine.generators.*
@@ -24,21 +24,21 @@ object UsersSuite extends PostgresSuite:
   }
 
   test("Should be able to get the average emission scores for all of a users transactions") { postgres =>
-    val companiesAlgebra: Companies[IO]               = Companies.make[IO](postgres)
-    val usersAlgebra: Users[IO]                       = Users.make[IO](postgres)
-    val userTransactionsAlgebra: UserTransactions[IO] = UserTransactions.make[IO](postgres)
+    val companiesAlgebra: Companies[IO]                     = Companies.make[IO](postgres)
+    val usersAlgebra: Users[IO]                             = Users.make[IO](postgres)
+    val openAPITransactionsAlgebra: OpenAPITransactions[IO] = OpenAPITransactions.make[IO](postgres)
 
     val gen = for {
       user         <- userGen
       companies    <- nelGen(companyGen)
-      transactions <- sequenceListGen(companies.toList)(company => transactionGen(company.uuid, user.uuid))
+      transactions <- sequenceListGen(companies.toList)(company => openAPITransactionGen(company.uuid, user.uuid))
     } yield (companies, transactions, user)
 
     forall(gen) { case (companies, transactions, user) =>
       for {
         _     <- companies.traverse(companiesAlgebra.createCompany)
         _     <- usersAlgebra.createUser(user)
-        _     <- transactions.traverse(userTransactionsAlgebra.createTransaction)
+        _     <- transactions.traverse(openAPITransactionsAlgebra.createTransaction)
         score <- usersAlgebra.getScore(user.uuid)
         expectedScore = BigDecimal
           .decimal(companies.map(company => company.co2Emissions.value).toList.sum / companies.length)
