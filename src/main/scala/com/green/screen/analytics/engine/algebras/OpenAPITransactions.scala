@@ -1,6 +1,7 @@
 package com.green.screen.analytics.engine.algebras
 
 import cats.effect.kernel.{ Concurrent, MonadCancelThrow, Resource }
+import cats.ApplicativeThrow
 import cats.syntax.all.*
 import com.green.screen.analytics.engine.*
 import com.green.screen.analytics.engine.algebras.TransactionsSQL.*
@@ -19,12 +20,15 @@ trait OpenAPITransactions[F[_]] {
 object OpenAPITransactions:
   def make[F[_]: MonadCancelThrow: Concurrent: Logger](resource: Resource[F, Session[F]]): OpenAPITransactions[F] =
     new OpenAPITransactions[F]:
+
       override def createTransaction(transaction: OpenAPITransaction): F[Unit] = resource.use(session =>
-        for {
-          command <- session.prepare(insertTransaction)
-          _       <- command.execute(transaction)
-          _       <- Logger[F].info(s"Inserted transaction ${transaction.uuid} for company ${transaction.companyUuid}")
-        } yield ()
+        session.transaction.use(_ =>
+          for {
+            command <- session.prepare(insertTransaction)
+            _       <- command.execute(transaction)
+            _ <- Logger[F].info(s"Inserted transaction ${transaction.uuid} for company ${transaction.companyUuid}")
+          } yield ()
+        )
       )
 
       override def getTransactions(companyUuid: CompanyUuid): F[List[OpenAPITransaction]] = {
