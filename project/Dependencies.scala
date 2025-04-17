@@ -32,7 +32,8 @@ object Dependencies {
     "io.circe" %% "circe-core",
     "io.circe" %% "circe-generic",
     "io.circe" %% "circe-parser",
-    "io.circe" %% "circe-refined"
+    "io.circe" %% "circe-refined",
+    "io.circe" %% "circe-extras"
   ).map(_ % Version.Circe)
 
   val FlywayDb = List(
