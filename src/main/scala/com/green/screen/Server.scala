@@ -8,11 +8,11 @@ import com.green.screen.analytics.engine.algebras.Algebras
 import com.green.screen.analytics.engine.config.ConfigLoader
 import com.green.screen.analytics.engine.programs.*
 import com.green.screen.analytics.engine.routes.Routes
-import com.green.screen.middlewares.ErrorHandlingMiddleware
+import com.green.screen.middlewares.{ Authentication, ErrorHandlingMiddleware }
 import org.http4s.ember.server.EmberServerBuilder
 import org.http4s.server.middleware.Logger
-import org.typelevel.log4cats.slf4j.Slf4jLogger
 import org.typelevel.log4cats.SelfAwareStructuredLogger
+import org.typelevel.log4cats.slf4j.Slf4jLogger
 
 object Server extends IOApp:
   def run(args: List[String]): IO[ExitCode] = {
@@ -21,13 +21,14 @@ object Server extends IOApp:
       appConfig <- Resource.eval(ConfigLoader.loadConfig[IO])
       resources <- AppResources.make[IO](appConfig.db)
       _         <- Resource.eval(SqlMigrator[IO](appConfig.db).run)
-      algebras = Algebras.make[IO](resources.postgres)
-      programs = Programs.make[IO](algebras)
-      routes   = Routes.make(programs).orNotFound
+      algebras               = Algebras.make[IO](resources.postgres)
+      programs               = Programs.make[IO](algebras)
+      routes                 = Routes.make(programs)
+      routesWithPatheticAuth = Authentication[IO].authedMiddleware(routes).orNotFound
       httpAppWithLogging = Logger.httpApp[IO](
         logHeaders = true,
         logBody = true
-      )(routes)
+      )(routesWithPatheticAuth)
       _ <-
         EmberServerBuilder
           .default[IO]

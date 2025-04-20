@@ -1,7 +1,6 @@
 package com.green.screen.analytics.engine.algebras
 
 import cats.effect.kernel.{ Concurrent, MonadCancelThrow, Resource }
-import cats.ApplicativeThrow
 import cats.syntax.all.*
 import com.green.screen.analytics.engine.*
 import com.green.screen.analytics.engine.algebras.TransactionsSQL.*
