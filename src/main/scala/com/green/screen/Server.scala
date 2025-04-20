@@ -5,6 +5,7 @@ import cats.effect.*
 import com.comcast.ip4s.{ ipv4, port }
 import com.green.screen.analytics.engine.*
 import com.green.screen.analytics.engine.algebras.Algebras
+import com.green.screen.analytics.engine.algebras.clients.Clients
 import com.green.screen.analytics.engine.config.ConfigLoader
 import com.green.screen.analytics.engine.programs.*
 import com.green.screen.analytics.engine.routes.Routes
@@ -22,6 +23,7 @@ object Server extends IOApp:
       resources <- AppResources.make[IO](appConfig.db)
       _         <- Resource.eval(SqlMigrator[IO](appConfig.db).run)
       algebras               = Algebras.make[IO](resources.postgres)
+      clients                = Clients.make[IO](resources.client)
       programs               = Programs.make[IO](algebras)
       routes                 = Routes.make(programs)
       routesWithPatheticAuth = Authentication[IO].authedMiddleware(routes).orNotFound

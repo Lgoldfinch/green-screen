@@ -27,70 +27,14 @@ object OpenAPIBankingClient {
     override def setAccountAccessConsents(
         accountRequest: CreateAccountAccessConsentsRequest
     ): F[CreateAccountAccessConsentsResponse] = {
-
-      val postRequest =
-        Uri.fromString("account-access-consents").liftTo[F].map { uri =>
+      for {
+        postRequest <- Uri.fromString("account-access-consents").liftTo[F].map { uri =>
           Request[F](Method.POST, uri, headers = headers).withEntity(
             accountRequest
           )
         }
-
-      postRequest.flatMap(client.expect[CreateAccountAccessConsentsResponse])
+        response <- client.expect[CreateAccountAccessConsentsResponse](postRequest)
+      } yield response
     }
   }
-
 }
-
-//enum Permission:
-//  case ReadAccountsDetail
-//  case ReadBalances
-//  case ReadBeneficiariesDetail
-//  case ReadDirectDebits
-//  case ReadProducts
-//  case ReadStandingOrdersDetail
-//  case ReadTransactionsCredits
-//  case ReadTransactionsDebits
-//  case ReadTransactionsDetail
-//  case ReadOffers
-//  case ReadPAN
-//  case ReadParty
-//  case ReadPartyPSU
-//  case ReadScheduledPaymentsDetail
-//  case ReadStatementsDetail
-//
-//object Permission {
-//    given Encoder[Permission] = Encoder.encodeString.contramap(_.toString)
-//}
-////
-////opaque type DateTime = OffsetDateTime
-////
-////object DateTime:
-////  def apply(dt: OffsetDateTime): DateTime = dt
-////
-////  extension (d: DateTime) def value: OffsetDateTime = d
-////
-////  given Encoder[DateTime] = Encoder.encodeOffsetDateTime.contramap(_.value)
-////
-////  given Decoder[DateTime] = Decoder.decodeOffsetDateTime.map(DateTime(_))
-//
-//final case class SetAccountAccessConsentsRequest(
-//                                                  data: SetAccountAccessConsentsRequestData
-//                                                 )
-//
-//object SetAccountAccessConsentsRequest {
-//  given requestDecoder: Encoder[SetAccountAccessConsentsRequest] = deriveEncoder[SetAccountAccessConsentsRequest]
-//}
-//
-//final case class SetAccountAccessConsentsRequestData(
-//                                                      permissions: List[Permission],
-//                                                      ExpirationDateTime: DateTime,
-//                                                      TransactionFromDateTime: DateTime,
-//                                                      TransactionToDateTime: DateTime
-//                                                    )
-//
-//object SetAccountAccessConsentsRequestData {
-//  given requestDecoder: Encoder[SetAccountAccessConsentsRequestData] = deriveEncoder[SetAccountAccessConsentsRequestData]
-//}
-//
-//
-//final case class SetAccountAccessConsentsResponse()

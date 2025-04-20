@@ -57,22 +57,26 @@ object TransactionToDateTime {
 }
 
 final case class CreateAccountAccessConsentsRequest(
+    data: CreateAccountAccessConsentsRequestData
+) derives ConfiguredEncoder
+
+final case class CreateAccountAccessConsentsRequestData(
     permissions: List[Permission],
     expirationDateTime: ExpirationDateTime,
     transactionFromDateTime: TransactionFromDateTime,
     transactionToDateDateTime: TransactionToDateTime
 ) derives ConfiguredEncoder
 
-enum AccountAccessConsentsStatus(stringRepresentation: String):
+enum AccountAccessConsentsStatus(val stringRepresentation: String):
   case AwaitingAuthorisation extends AccountAccessConsentsStatus("AWAU")
   case Authorised            extends AccountAccessConsentsStatus("AUTH")
   case Rejected              extends AccountAccessConsentsStatus("RJCT")
   case Cancelled             extends AccountAccessConsentsStatus("CANC")
   case Expired               extends AccountAccessConsentsStatus("EXPD")
-  println(stringRepresentation)
-  given accountAccessStatusDecoder: Encoder[AccountAccessConsentsStatus] = ???
-  given accountAccessStatusEncoder: Decoder[AccountAccessConsentsStatus] = ???
-end AccountAccessConsentsStatus
+
+object AccountAccessConsentsStatus {
+  given accountAccessConsentsStatusCodec: Codec[AccountAccessConsentsStatus] = ConfiguredEnumCodec.derived
+}
 
 final case class StatusReason(statusReasonCode: NonEmptyString, statusReasonDescription: NonEmptyString)
 
@@ -86,4 +90,5 @@ object ConsentId {
     _.get[ConsentId]("ConsentId")
 }
 
-final case class CreateAccountAccessConsentsResponse(consentId: String) derives ConfiguredDecoder
+final case class CreateAccountAccessConsentsResponse(consentId: ConsentId, status: AccountAccessConsentsStatus)
+    derives ConfiguredDecoder

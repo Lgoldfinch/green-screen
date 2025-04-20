@@ -1,7 +1,7 @@
 package com.green.screen
 
-import cats.effect.{ MonadCancelThrow, Resource }
-import cats.effect.kernel.Temporal
+import cats.effect.Resource
+import cats.effect.kernel.{ Async, Temporal }
 import cats.effect.std.Console
 import fs2.io.net.Network
 import org.typelevel.log4cats.Logger
@@ -11,13 +11,16 @@ import skunk.implicits.*
 import cats.syntax.all.*
 import com.green.screen.analytics.engine.config.DBConfig
 import natchez.Trace.Implicits.noop
+import org.http4s.client.Client
+import org.http4s.ember.client.EmberClientBuilder
 
 sealed abstract class AppResources[F[_]](
-    val postgres: Resource[F, Session[F]]
+    val postgres: Resource[F, Session[F]],
+    val client: Client[F]
 )
 
 object AppResources {
-  def make[F[_]: Console: Logger: MonadCancelThrow: Network: Temporal](
+  def make[F[_]: Console: Logger: Async: Network: Temporal](
       dbConfig: DBConfig
   ): Resource[F, AppResources[F]] = {
     def checkPostgresConnection(
@@ -30,7 +33,7 @@ object AppResources {
       }
     }
 
-    def mkPostgresResource: Resource[F, Resource[F, Session[F]]] =
+    def mkPostgresResource: Resource[F, Resource[F, Session[F]]] = {
       Session
         .pooled[F](
           host = dbConfig.host,
@@ -41,7 +44,11 @@ object AppResources {
           max = dbConfig.poolSize
         )
         .evalTap(checkPostgresConnection)
+    }
 
-    mkPostgresResource.map(new AppResources[F](_) {})
+    def mkEmberClient: Resource[F, Client[F]] =
+      EmberClientBuilder.default[F].build
+
+    (mkPostgresResource, mkEmberClient).mapN(new AppResources[F](_, _) {})
   }
 }
