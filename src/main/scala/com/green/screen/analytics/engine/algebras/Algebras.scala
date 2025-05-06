@@ -7,6 +7,7 @@ trait Algebras[F[_]]:
   val companies: Companies[F]
   val transactions: OpenAPITransactions[F]
   val users: Users[F]
+  val userOpenApiData: UserOpenApiData[F]
 end Algebras
 
 object Algebras:
@@ -15,5 +16,6 @@ object Algebras:
       override val companies: Companies[F]              = Companies.make[F](postgres)
       override val transactions: OpenAPITransactions[F] = OpenAPITransactions.make[F](postgres)
       override val users: Users[F]                      = Users.make[F](postgres)
+      override val userOpenApiData: UserOpenApiData[F]  = UserOpenApiData.make[F](postgres) 
     }
 end Algebras

@@ -21,11 +21,4 @@ object GenUUID {
       def read(str: String): F[UUID] =
         ApplicativeThrow[F].catchNonFatal(UUID.fromString(str))
     }
-
-  implicit def forStream[F[_]](implicit F: GenUUID[F]): GenUUID[Stream[F, *]] =
-    new GenUUID[Stream[F, *]] {
-      override def make: Stream[F, UUID] = Stream.eval(F.make)
-
-      override def read(str: String): Stream[F, UUID] = Stream.eval(F.read(str))
-    }
 }

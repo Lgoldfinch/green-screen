@@ -11,7 +11,7 @@ object Routes:
   def make[F[_]: Concurrent: Logger](programs: Programs[F]): AuthedRoutes[UserType, F] = {
     val transactionRoutes = TransactionRoutes.routes[F](programs.processTransaction)
     val userRoutes        = UserRoutes.routes(programs.getUserScores)
-
+    
     List(transactionRoutes, userRoutes).reduce(_ <+> _)
   }
 end Routes
