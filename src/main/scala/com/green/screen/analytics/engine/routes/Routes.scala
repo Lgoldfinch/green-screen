@@ -10,8 +10,8 @@ import org.typelevel.log4cats.Logger
 object Routes:
   def make[F[_]: Concurrent: Logger](programs: Programs[F]): AuthedRoutes[UserType, F] = {
     val transactionRoutes = TransactionRoutes.routes[F](programs.processTransaction)
-    val userRoutes        = UserRoutes.routes(programs.getUserScores)
-    
+    val userRoutes        = UserRoutes.routes(programs.getUserScores, programs.setAccountConsents)
+
     List(transactionRoutes, userRoutes).reduce(_ <+> _)
   }
 end Routes

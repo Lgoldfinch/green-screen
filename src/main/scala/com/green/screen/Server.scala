@@ -24,7 +24,7 @@ object Server extends IOApp:
       _         <- Resource.eval(SqlMigrator[IO](appConfig.db).run)
       algebras               = Algebras.make[IO](resources.postgres)
       clients                = Clients.make[IO](resources.client)
-      programs               = Programs.make[IO](algebras)
+      programs               = Programs.make[IO](algebras, clients)
       routes                 = Routes.make(programs)
       routesWithPatheticAuth = Authentication[IO].authedMiddleware(routes).orNotFound
       httpAppWithLogging = Logger.httpApp[IO](

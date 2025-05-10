@@ -16,6 +16,6 @@ object Algebras:
       override val companies: Companies[F]              = Companies.make[F](postgres)
       override val transactions: OpenAPITransactions[F] = OpenAPITransactions.make[F](postgres)
       override val users: Users[F]                      = Users.make[F](postgres)
-      override val userOpenApiData: UserOpenApiData[F]  = UserOpenApiData.make[F](postgres) 
+      override val userOpenApiData: UserOpenApiData[F]  = UserOpenApiData.make[F](postgres)
     }
 end Algebras

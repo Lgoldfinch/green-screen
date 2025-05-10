@@ -71,10 +71,10 @@ final case class CreateAccountAccessConsentsRequest(
 ) derives ConfiguredEncoder
 
 final case class CreateAccountAccessConsentsRequestData(
-                                                         permissions: NonEmptyList[Permission],
-                                                         expirationDateTime: ExpirationDateTime,
-                                                         transactionFromDateTime: TransactionFromDateTime,
-                                                         transactionToDateDateTime: TransactionToDateTime
+    permissions: NonEmptyList[Permission],
+    expirationDateTime: ExpirationDateTime,
+    transactionFromDateTime: TransactionFromDateTime,
+    transactionToDateDateTime: TransactionToDateTime
 ) derives ConfiguredEncoder
 
 enum AccountAccessConsentsStatus(val stringRepresentation: String):

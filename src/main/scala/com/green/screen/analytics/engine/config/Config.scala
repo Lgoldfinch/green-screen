@@ -7,9 +7,13 @@ import pureconfig.generic.derivation.*
 import cats.syntax.all.*
 import pureconfig.error.ConfigReaderFailures
 
-final case class AppConfig(db: DBConfig) derives ConfigReader
+final case class AppConfig(db: DBConfig, openApiBankingConfig: OpenApiBankingConfig) derives ConfigReader
 
-case class DBConfig(port: Int, host: String, dbUser: String, password: String, name: String, poolSize: Int)
+final case class DBConfig(port: Int, host: String, dbUser: String, password: String, name: String, poolSize: Int)
+
+final case class OpenApiBankingConfig(orgId: String, softwareStatementId: String, trustAnchorId: String) {
+  def makeISS: String = orgId + "/" + softwareStatementId
+}
 
 object ConfigLoader {
   def loadConfig[F[_]: ApplicativeThrow]: F[AppConfig] =
