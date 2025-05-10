@@ -13,11 +13,12 @@ trait Programs[F[_]]:
 end Programs
 
 object Programs {
-  def make[F[_]: MonadThrow: Logger: GenUUID](algebras: Algebras[F], clients: Clients[F]): Programs[F] = new Programs[F] {
-    override val getUserScores: GetUserScores[F] = GetUserScores[F](algebras.users)
-    override val processTransaction: ProcessTransaction[F] =
-      ProcessTransaction[F](algebras.companies, algebras.transactions)
-    override val setAccountConsents: CreateAccountAccessConsent[F] =
-      CreateAccountAccessConsent[F](clients.openAPIBankingClient, algebras.userOpenApiData)
-  }
+  def make[F[_]: MonadThrow: Logger: GenUUID](algebras: Algebras[F], clients: Clients[F]): Programs[F] =
+    new Programs[F] {
+      override val getUserScores: GetUserScores[F] = GetUserScores[F](algebras.users)
+      override val processTransaction: ProcessTransaction[F] =
+        ProcessTransaction[F](algebras.companies, algebras.transactions)
+      override val setAccountConsents: CreateAccountAccessConsent[F] =
+        CreateAccountAccessConsent[F](clients.openAPIBankingClient, algebras.userOpenApiData)
+    }
 }

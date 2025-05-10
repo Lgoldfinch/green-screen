@@ -20,6 +20,7 @@ lazy val root = (project in file("."))
     Http4s,
     Logback,
     Logging,
+    NimbusJoseJwt,
     PureConfig,
     Refined,
     Skunk

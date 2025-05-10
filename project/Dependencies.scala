@@ -10,6 +10,7 @@ object Dependencies {
     val Skunk = "0.6.4"
     val Logback = "1.2.6"
     val Log4Cats     = "2.2.0"
+    val NimbusJoseJwt = "9.37"
     val PureConfig     = "0.17.8"
     val Refined     = "0.11.2"
     val FlywayDb     = "9.8.2"
@@ -57,6 +58,10 @@ object Dependencies {
     "org.typelevel" %% "log4cats-slf4j",
     "org.typelevel" %% "log4cats-noop"
   ).map(_ % Version.Log4Cats)
+
+  val NimbusJoseJwt = List(
+    "com.nimbusds" % "nimbus-jose-jwt"
+  ).map(_ % Version.NimbusJoseJwt)
 
   val PureConfig = List(
     "com.github.pureconfig" %% "pureconfig-core"
