@@ -1,6 +1,6 @@
 package com.green.screen.analytics.engine
 
-import cats.{Id, Monad, MonadThrow}
+import cats.{ Id, Monad, MonadThrow }
 
 object utils {
   given monadThrowId(using M: Monad[Id]): MonadThrow[Id] = new MonadThrow[Id] {
@@ -8,9 +8,8 @@ object utils {
 
     override def tailRecM[A, B](a: A)(f: A => Id[Either[A, B]]): Id[B] = M.tailRecM(a)(f)
 
-    override def raiseError[A](e: Throwable): Id[A] = {
-      throw e
-    }
+    override def raiseError[A](e: Throwable): Id[A] = throw e
+    
 
     override def handleErrorWith[A](fa: Id[A])(f: Throwable => Id[A]): Id[A] = f(
       new RuntimeException("Oops! Something went wrong")

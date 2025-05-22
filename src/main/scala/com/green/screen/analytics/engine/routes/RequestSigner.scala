@@ -1,13 +1,13 @@
 package com.green.screen.analytics.engine.routes
 
 import cats.syntax.all.*
-import cats.{ApplicativeThrow, MonadThrow}
+import cats.{ ApplicativeThrow, MonadThrow }
 import com.green.screen.analytics.engine.config.OpenApiBankingConfig
 import com.nimbusds.jose.crypto.RSASSASigner
-import com.nimbusds.jose.{JWSAlgorithm, JWSHeader, JWSObject, Payload}
+import com.nimbusds.jose.{ JWSAlgorithm, JWSHeader, JWSObject, Payload }
 
 import java.security.spec.PKCS8EncodedKeySpec
-import java.security.{KeyFactory, PrivateKey}
+import java.security.{ KeyFactory, PrivateKey }
 import java.time.Instant
 import java.util
 import scala.jdk.CollectionConverters.*
@@ -15,6 +15,7 @@ import AuthHeaders.JWSToken
 
 import java.util.Base64
 
+// Make a JWS Codec entity
 class RequestSigner[F[_]: MonadThrow](config: OpenApiBankingConfig) {
 
   // See https://openbankinguk.github.io/read-write-api-site3/v4.0/profiles/read-write-data-api-profile.html for details.
@@ -25,9 +26,9 @@ class RequestSigner[F[_]: MonadThrow](config: OpenApiBankingConfig) {
 
     val openAPIBankingParameters: util.Map[String, Object] =
       Map(
-        timeSinceEpochHeaderIATKey -> Instant.EPOCH.toString,
+        timeSinceEpochHeaderIATKey -> Instant.now().getEpochSecond.toString,
         pspIdentifierISSKey -> config.makeISS, // Identify PSP, If issuer is using certificate -> needs to match subject, of signing certificate.
-        trustAnchorDomainNameTANKey -> config.trustAnchorId,
+        trustAnchorDomainNameTANKey -> config.trustAnchorId
       ).asJava
 
     val kid =
@@ -35,13 +36,11 @@ class RequestSigner[F[_]: MonadThrow](config: OpenApiBankingConfig) {
 
     for {
       jwsHeader <- ApplicativeThrow[F].catchNonFatal(
-        new JWSHeader.Builder(JWSAlgorithm.PS256).keyID(kid)
+        new JWSHeader.Builder(JWSAlgorithm.PS256)
+          .keyID(kid)
           .customParams(openAPIBankingParameters)
           .criticalParams(
-            Set(
-              timeSinceEpochHeaderIATKey,
-              pspIdentifierISSKey,
-              trustAnchorDomainNameTANKey).asJava
+            Set(timeSinceEpochHeaderIATKey, pspIdentifierISSKey, trustAnchorDomainNameTANKey).asJava
           )
           .build()
       )
@@ -55,10 +54,12 @@ class RequestSigner[F[_]: MonadThrow](config: OpenApiBankingConfig) {
   }
 
   private def decodePrivateKey(privateKey: String): PrivateKey = {
-    val yes = privateKey.replace("-----BEGIN PRIVATE KEY-----", "")
-      .replace("-----END PRIVATE KEY-----", "").replaceAll("\\s", "")
+    val cleanedPrivateKey = privateKey
+      .replace("-----BEGIN PRIVATE KEY-----", "")
+      .replace("-----END PRIVATE KEY-----", "")
+      .replaceAll("\\s", "")
 
-    val decodedPrivateKey = Base64.getDecoder().decode(yes)
+    val decodedPrivateKey = Base64.getDecoder().decode(cleanedPrivateKey)
     val keySpec           = new PKCS8EncodedKeySpec(decodedPrivateKey)
     val keyFactory        = KeyFactory.getInstance("RSA")
 
@@ -67,8 +68,8 @@ class RequestSigner[F[_]: MonadThrow](config: OpenApiBankingConfig) {
 }
 
 private object RequestSigner {
-  val timeSinceEpochHeaderIATKey = "http://openbanking.org.uk/iat"
-  val pspIdentifierISSKey = "http://openbanking.org.uk/iss"
+  val timeSinceEpochHeaderIATKey  = "http://openbanking.org.uk/iat"
+  val pspIdentifierISSKey         = "http://openbanking.org.uk/iss"
   val trustAnchorDomainNameTANKey = "http://openbanking.org.uk/tan"
 }
 
