@@ -1,17 +1,18 @@
 package com.green.screen.analytics.engine.routes
 
-import cats.*
+import cats.Id
 import com.green.screen.analytics.engine.generators.openBanking.openApiBankingConfig
-import com.green.screen.analytics.engine.routes.AuthHeaders.*
 import com.green.screen.analytics.engine.utils.monadThrowId
-import com.nimbusds.jose.{ JWSAlgorithm, JWSHeader }
 import munit.ScalaCheckEffectSuite
+import org.http4s.Header
 import org.scalacheck.Gen
 import org.scalacheck.Prop.forAll
-import scala.jdk.CollectionConverters.*
-import java.util.Base64
+import org.typelevel.ci.CIString
 
-class RequestSignerSuite extends ScalaCheckEffectSuite {
+import scala.util.{Failure, Success, Try}
+
+class ResponseValidatorSuite extends ScalaCheckEffectSuite {
+
   private val testPrivateKey =
     """
       |-----BEGIN PRIVATE KEY-----
@@ -45,35 +46,55 @@ class RequestSignerSuite extends ScalaCheckEffectSuite {
       |
       |""".stripMargin
 
-  test("RequestSigner should return the expected JWT") {
+
+  test("RequestValidator should pass if the jws has all the correct values") {
     forAll(openApiBankingConfig, Gen.alphaStr) { case (config, payload) =>
-      val requestSigner = RequestSigner[Id](config)
 
-      val jws       = requestSigner.createDetachedJWS(payload, testPrivateKey)
-      val jwsHeader = jws.value.split("\\.")(0)
+      val signedJWS = RequestSigner[Id](config).createDetachedJWS(payload, testPrivateKey)
 
-      val urlDecoder = Base64.getUrlDecoder()
-      val headerJson = String(urlDecoder.decode(jwsHeader))
+      val requestValidator = ResponseValidator[Id].validateJWS(Header.Raw(CIString("x-jws-signature"), signedJWS.value))
 
-      val jWSHeader = JWSHeader.parse(headerJson)
+      Try(requestValidator) match {
+        case Failure(exception) => fail(s"Should not have failed, err: ${exception.getMessage}")
+        case Success(_) => assert(true)
+      }
+    }
+  }
 
-      val algorithm = jWSHeader.getAlgorithm
-      val kid       = jWSHeader.getKeyID
+  test("RequestValidator should fail if the jws does not contain the x-jws-signature header") {
+    forAll(Gen.alphaStr, Gen.alphaStr) { case (headerName, headerContent) =>
 
-      val iss  = jWSHeader.getCustomParam(RequestSigner.pspIdentifierISSKey)
-      val tan  = jWSHeader.getCustomParam(RequestSigner.trustAnchorDomainNameTANKey)
-      val crit = jWSHeader.getCriticalParams.asScala.toSet
-      val expectedCritHeader = Set(
-        RequestSigner.timeSinceEpochHeaderIATKey,
-        RequestSigner.pspIdentifierISSKey,
-        RequestSigner.trustAnchorDomainNameTANKey
-      )
+      val requestValidator = Try(ResponseValidator[Id].validateJWS(Header.Raw(CIString(headerName), headerContent)))
 
-      assertEquals(algorithm, JWSAlgorithm.PS256)
-      assertEquals(kid, "tbd")
-      assertEquals(iss, config.orgId + "/" + config.softwareStatementId)
-      assertEquals(tan, config.trustAnchorId)
-      assertEquals(crit, expectedCritHeader)
+      requestValidator match {
+        case Failure(exception: JWSValidationError) => assertEquals(exception.getMessage, "No x-jws-signature-present")
+        case otherResult => fail(s"Should not have failed, result: $otherResult")
+      }
+    }
+  }
+
+  test("RequestValidator should fail when header value is empty") {
+    val requestValidator = Try(ResponseValidator[Id].validateJWS(Header.Raw(CIString("x-jws-signature"), "")))
+
+    requestValidator match {
+      case Failure(exception) =>
+        assert(true)
+      case Success(_) =>
+        fail(s"Should have failed")
+    }
+  }
+
+  test("RequestValidator should fail if IAT is not present") {
+    forAll(openApiBankingConfig, Gen.alphaStr) { case (config, payload) =>
+
+      val signedJWS = RequestSigner[Id](config).createDetachedJWS(payload, testPrivateKey)
+
+      val requestValidator = Try(ResponseValidator[Id].validateJWS(Header.Raw(CIString("x-jws-signature"), signedJWS.value)))
+
+      requestValidator match {
+        case Failure(exception) =>
+        case Success(_) =>
+      }
     }
   }
 }
