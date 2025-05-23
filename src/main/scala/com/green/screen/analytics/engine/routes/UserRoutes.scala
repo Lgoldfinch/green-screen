@@ -7,7 +7,7 @@ import com.green.screen.analytics.engine.domain.{CreateAccountAccessConsentsRequ
 import com.green.screen.analytics.engine.programs.{CreateAccountAccessConsent, GetUserScores}
 import com.green.screen.analytics.engine.programs.GetUserScores.UserNotFound
 import com.green.screen.middlewares.UserType
-import org.http4s.AuthedRoutes
+import org.http4s.{AuthedRoutes, HttpRoutes}
 import org.http4s.circe.CirceEntityCodec.circeEntityEncoder
 import org.http4s.dsl.Http4sDsl
 import org.typelevel.log4cats.Logger
