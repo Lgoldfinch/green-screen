@@ -30,5 +30,7 @@ package object generators:
     list.map(item => f(item))
   )
 
-  val createdAtGen: Gen[CreatedAt] = Gen.long.map(l => CreatedAt(Instant.ofEpochSecond(l)))
+  val instantGen: Gen[Instant] = Gen.calendar.map(_.toInstant)
+  
+  val createdAtGen: Gen[CreatedAt] = instantGen.map(CreatedAt.apply)
 end generators

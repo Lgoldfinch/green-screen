@@ -8,11 +8,14 @@ import com.green.screen.analytics.engine.domain.UserUuid.*
 import com.green.screen.analytics.engine.domain.common.CreatedAt.*
 import com.green.screen.analytics.engine.domain.common.CreatedAt
 import com.green.screen.common.domain.skunks.nesCodec
+import eu.timepit.refined.api.Refined
+import eu.timepit.refined.string.EndsWith
 import eu.timepit.refined.types.string.NonEmptyString
 import io.circe.*
 import io.circe.derivation.*
 import io.circe.derivation.Configuration.default
 import skunk.codec.all.*
+import common.*
 
 import java.time.Instant
 import java.util.UUID
@@ -53,7 +56,7 @@ opaque type TransactionFromDateTime = Instant
 
 object TransactionFromDateTime {
   def apply(instant: Instant): TransactionFromDateTime                                        = instant
-  extension (transactionFromDate: TransactionFromDateTime) def value: TransactionFromDateTime = transactionFromDate
+  extension (transactionFromDate: TransactionFromDateTime) def value: Instant = transactionFromDate
   given transactionFromDateTimeEncoder: Encoder[TransactionFromDateTime] = Encoder.encodeInstant.contramap(_.value)
 
 }
@@ -71,18 +74,18 @@ final case class CreateAccountAccessConsentsRequest(
 ) derives ConfiguredEncoder
 
 final case class CreateAccountAccessConsentsRequestData(
-                                                         permissions: NonEmptyList[Permission],
-                                                         expirationDateTime: ExpirationDateTime,
-                                                         transactionFromDateTime: TransactionFromDateTime,
-                                                         transactionToDateDateTime: TransactionToDateTime
+    permissions: NonEmptyList[Permission],
+    expirationDateTime: ExpirationDateTime,
+    transactionFromDateTime: TransactionFromDateTime,
+    transactionToDateDateTime: TransactionToDateTime
 ) derives ConfiguredEncoder
 
 enum AccountAccessConsentsStatus(val stringRepresentation: String):
-  case AwaitingAuthorisation extends AccountAccessConsentsStatus("AWAU")
-  case Authorised            extends AccountAccessConsentsStatus("AUTH")
-  case Rejected              extends AccountAccessConsentsStatus("RJCT")
-  case Cancelled             extends AccountAccessConsentsStatus("CANC")
-  case Expired               extends AccountAccessConsentsStatus("EXPD")
+  case AWAU extends AccountAccessConsentsStatus("AWAU")
+  case AUTH extends AccountAccessConsentsStatus("AUTH")
+  case RJCT extends AccountAccessConsentsStatus("RJCT")
+  case CANC extends AccountAccessConsentsStatus("CANC")
+  case EXPD extends AccountAccessConsentsStatus("EXPD")
 
 object AccountAccessConsentsStatus {
   given accountAccessConsentsStatusCodec: Codec[AccountAccessConsentsStatus] = ConfiguredEnumCodec.derived
@@ -90,21 +93,25 @@ object AccountAccessConsentsStatus {
 
 final case class StatusReason(statusReasonCode: NonEmptyString, statusReasonDescription: NonEmptyString)
 
+type BankPrefix = String Refined EndsWith["/"]
+
 opaque type ConsentId = NonEmptyString
 
 object ConsentId {
   def apply(nes: NonEmptyString): ConsentId = nes
 
-  extension (consentId: ConsentId) def value: ConsentId = consentId
-  implicit val permissionDecoder: Decoder[ConsentId] =
-    _.get[ConsentId]("ConsentId")
+  extension (consentId: ConsentId) def value: NonEmptyString = consentId
+
+  given Encoder[ConsentId] = nesEncoder.contramap(_.value)
+
+  given Decoder[ConsentId] = nesDecoder.map(ConsentId.apply)
 
   val consentIdCodec: skunk.Codec[ConsentId] =
     nesCodec.imap(ConsentId.apply)(_.value)
 }
 
-final case class CreateAccountAccessConsentsResponse(consentId: ConsentId, status: AccountAccessConsentsStatus)
-    derives ConfiguredDecoder
+final case class AccountAccessConsentsResponse(consentId: ConsentId, status: AccountAccessConsentsStatus)
+    derives ConfiguredCodec
 
 opaque type UserOpenApiDataUuid = UUID
 

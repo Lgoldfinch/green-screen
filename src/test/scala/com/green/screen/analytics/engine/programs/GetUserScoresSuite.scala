@@ -11,7 +11,7 @@ import cats.syntax.all.*
 
 class GetUserScoresSuite extends CatsEffectSuite with ScalaCheckEffectSuite {
 
-  test("Should ƒail if no user is found for the given user UUID") {
+  test("Should fail if no user is found for the given user UUID") {
 
     val failedUsersAlgebra: Users[IO] = new TestUsers {
       override def getUser(userUuid: UserUuid): IO[Option[User]] = IO(none[User])

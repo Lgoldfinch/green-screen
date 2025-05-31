@@ -2,46 +2,68 @@ package com.green.screen.analytics.engine.algebras.clients
 
 import cats.effect.kernel.Concurrent
 import cats.syntax.all.*
-import com.green.screen.analytics.engine.domain.{CreateAccountAccessConsentsRequest, CreateAccountAccessConsentsResponse}
+import com.green.screen.analytics.engine.domain.*
 import eu.timepit.refined.api.Refined
-import eu.timepit.refined.types.string
-import eu.timepit.refined.types.string.NonEmptyString
-import org.http4s.*
-import org.http4s.circe.CirceEntityCodec.*
-import org.http4s.client.Client
-import org.http4s.client.dsl.Http4sClientDsl
-import org.http4s.headers.Accept
-import org.http4s.server.Router
-import eu.timepit.refined.string.*
 import org.http4s
+import org.http4s.*
+import org.http4s.Status.{BadRequest, NotFound}
+import org.http4s.circe.CirceEntityCodec.*
+import org.http4s.client.dsl.Http4sClientDsl
+import org.http4s.client.{Client, UnexpectedStatus}
+import org.http4s.headers.`Content-Type`
+import org.typelevel.log4cats.Logger
 
 trait AccountAccessConsentClient[F[_]] {
-  def setAccountAccessConsents(
+  def setAccountAccessConsent(
       accountRequest: CreateAccountAccessConsentsRequest
-  ): F[CreateAccountAccessConsentsResponse]
+  ): F[AccountAccessConsentsResponse]
+
+  def getAccountAccessConsent(consentId: ConsentId): F[AccountAccessConsentsResponse]
 }
 
-type BankPrefix = String Refined EndsWith["/"]
-
 object AccountAccessConsentClient {
-  // We need to have client that changes the root depending on the bank
-  def make[F[_]: Concurrent](client: Client[F], bankPrefixPath: BankPrefix): AccountAccessConsentClient[F] = new AccountAccessConsentClient
-    with Http4sClientDsl[F] {
-
-    private val headers = Headers(Accept(MediaType.application.json))
-
-    override def setAccountAccessConsents(
-        accountRequest: CreateAccountAccessConsentsRequest
-    ): F[CreateAccountAccessConsentsResponse] = {
-      for {
-        postRequest <- http4s.Uri.fromString(bankPrefixPath.value + "account-access-consents")
-          .liftTo[F].map { uri =>
-          Request[F](Method.POST, uri, headers = headers).withEntity(
-            accountRequest
+  def make[F[_]: Concurrent: Logger](client: Client[F], bankPrefixPath: BankPrefix): AccountAccessConsentClient[F] =
+    new AccountAccessConsentClient with Http4sClientDsl[F] {
+      
+      private val handleErrors: PartialFunction[Throwable, F[Unit]] = {
+        case UnexpectedStatus(BadRequest, _, requestUri) =>
+          Logger[F].error(
+            s"Was unable to set account access consent for request uri $requestUri, consent id was invalid"
           )
-        }
-        response <- client.expect[CreateAccountAccessConsentsResponse](postRequest)
-      } yield response
+        case UnexpectedStatus(NotFound, _, requestUri) =>
+          Logger[F].error(
+            s"Was unable to set account access consent for request uri $requestUri, endpoint doesn't exist"
+          )
+      }
+
+      override def setAccountAccessConsent(
+          accountRequest: CreateAccountAccessConsentsRequest
+      ): F[AccountAccessConsentsResponse] = {
+        for {
+          postRequest <- http4s.Uri
+            .fromString(bankPrefixPath.value + "account-access-consents")
+            .liftTo[F]
+            .map { uri =>
+              Request[F](Method.POST, uri).withEntity(
+                accountRequest
+              )
+            }
+          response <- client.expect[AccountAccessConsentsResponse](postRequest).onError(handleErrors)
+        } yield response
+      }
+
+      override def getAccountAccessConsent(consentId: ConsentId): F[AccountAccessConsentsResponse] =
+        for {
+          getRequest <- http4s.Uri
+            .fromString(bankPrefixPath.value + s"account-access-consents/$consentId")
+            .liftTo[F]
+            .map { uri =>
+              Request[F](Method.GET, uri).withContentType(`Content-Type`(MediaType.application.json))
+            }
+          response <-
+            client
+              .expect[AccountAccessConsentsResponse](getRequest)
+              .onError(handleErrors)
+        } yield response
     }
-  }
 }

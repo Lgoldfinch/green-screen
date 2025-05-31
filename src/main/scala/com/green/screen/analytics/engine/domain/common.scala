@@ -10,6 +10,8 @@ import skunk.Codec
 object common {
   implicit val nesDecoder: Decoder[NonEmptyString] = Decoder.decodeString.emap(NonEmptyString.from)
 
+  implicit val nesEncoder: Encoder[NonEmptyString] = Encoder.encodeString.contramap(_.value)
+
   opaque type CreatedAt = Instant
 
   object CreatedAt {

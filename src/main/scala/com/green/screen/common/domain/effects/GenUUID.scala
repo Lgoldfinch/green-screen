@@ -2,7 +2,6 @@ package com.green.screen.common.domain.effects
 
 import cats.ApplicativeThrow
 import cats.effect.Sync
-import fs2.Stream
 
 import java.util.UUID
 
