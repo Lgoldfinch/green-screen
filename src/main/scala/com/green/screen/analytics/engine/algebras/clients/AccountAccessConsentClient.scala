@@ -13,6 +13,8 @@ import org.http4s.client.{Client, UnexpectedStatus}
 import org.http4s.headers.`Content-Type`
 import org.typelevel.log4cats.Logger
 
+import scala.util.control.NoStackTrace
+
 trait AccountAccessConsentClient[F[_]] {
   def setAccountAccessConsent(
       accountRequest: CreateAccountAccessConsentsRequest
@@ -25,15 +27,11 @@ object AccountAccessConsentClient {
   def make[F[_]: Concurrent: Logger](client: Client[F], bankPrefixPath: BankPrefix): AccountAccessConsentClient[F] =
     new AccountAccessConsentClient with Http4sClientDsl[F] {
       
-      private val handleErrors: PartialFunction[Throwable, F[Unit]] = {
+      private val handleErrors: PartialFunction[Throwable, Throwable] = {
         case UnexpectedStatus(BadRequest, _, requestUri) =>
-          Logger[F].error(
-            s"Was unable to set account access consent for request uri $requestUri, consent id was invalid"
-          )
+            AccountAccessConsentClientError(s"Was unable to set account access consent for request uri $requestUri, consent id was invalid")
         case UnexpectedStatus(NotFound, _, requestUri) =>
-          Logger[F].error(
-            s"Was unable to set account access consent for request uri $requestUri, endpoint doesn't exist"
-          )
+            AccountAccessConsentClientError(s"Was unable to set account access consent for request uri $requestUri, endpoint doesn't exist")
       }
 
       override def setAccountAccessConsent(
@@ -48,7 +46,7 @@ object AccountAccessConsentClient {
                 accountRequest
               )
             }
-          response <- client.expect[AccountAccessConsentsResponse](postRequest).onError(handleErrors)
+          response <- client.expect[AccountAccessConsentsResponse](postRequest).adaptError(handleErrors)
         } yield response
       }
 
@@ -63,7 +61,11 @@ object AccountAccessConsentClient {
           response <-
             client
               .expect[AccountAccessConsentsResponse](getRequest)
-              .onError(handleErrors)
+              .adaptError(handleErrors)
         } yield response
     }
 }
+
+final class AccountAccessConsentClientError(msg: String) extends NoStackTrace {
+  override def getMessage: String = msg
+} 
