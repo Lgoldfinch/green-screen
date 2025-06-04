@@ -15,27 +15,31 @@ import org.typelevel.log4cats.Logger
 
 import scala.util.control.NoStackTrace
 
-trait AccountAccessConsentClient[F[_]] {
+trait AccountAccessConsentClient[F[_]]: 
   def setAccountAccessConsent(
-      accountRequest: CreateAccountAccessConsentsRequest
-  ): F[AccountAccessConsentsResponse]
+      accountRequest: CreateAccountAccessConsentsRequest,
+      bankPrefixPath: BankPrefix
+                             ): F[AccountAccessConsentsResponse]
 
-  def getAccountAccessConsent(consentId: ConsentId): F[AccountAccessConsentsResponse]
-}
+  def getAccountAccessConsent(consentId: ConsentId,
+                              bankPrefixPath: BankPrefix
+                             ): F[AccountAccessConsentsResponse]
+end AccountAccessConsentClient
 
-object AccountAccessConsentClient {
-  def make[F[_]: Concurrent: Logger](client: Client[F], bankPrefixPath: BankPrefix): AccountAccessConsentClient[F] =
+object AccountAccessConsentClient:
+  def make[F[_]: Concurrent: Logger](client: Client[F]): AccountAccessConsentClient[F] =
     new AccountAccessConsentClient with Http4sClientDsl[F] {
       
       private val handleErrors: PartialFunction[Throwable, Throwable] = {
         case UnexpectedStatus(BadRequest, _, requestUri) =>
-            AccountAccessConsentClientError(s"Was unable to set account access consent for request uri $requestUri, consent id was invalid")
+            AccountAccessConsentClientError(s"Was unable to get/set account access consent for request uri $requestUri, consent id was invalid")
         case UnexpectedStatus(NotFound, _, requestUri) =>
-            AccountAccessConsentClientError(s"Was unable to set account access consent for request uri $requestUri, endpoint doesn't exist")
+            AccountAccessConsentClientError(s"Was unable to get/set account access consent for request uri $requestUri, endpoint doesn't exist")
       }
 
       override def setAccountAccessConsent(
-          accountRequest: CreateAccountAccessConsentsRequest
+          accountRequest: CreateAccountAccessConsentsRequest,
+          bankPrefixPath: BankPrefix
       ): F[AccountAccessConsentsResponse] = {
         for {
           postRequest <- http4s.Uri
@@ -50,7 +54,10 @@ object AccountAccessConsentClient {
         } yield response
       }
 
-      override def getAccountAccessConsent(consentId: ConsentId): F[AccountAccessConsentsResponse] =
+      override def getAccountAccessConsent(consentId: ConsentId,
+                                           bankPrefixPath: BankPrefix
+
+                                          ): F[AccountAccessConsentsResponse] =
         for {
           getRequest <- http4s.Uri
             .fromString(bankPrefixPath.value + s"account-access-consents/$consentId")
@@ -64,8 +71,8 @@ object AccountAccessConsentClient {
               .adaptError(handleErrors)
         } yield response
     }
-}
+end AccountAccessConsentClient
 
 final class AccountAccessConsentClientError(msg: String) extends NoStackTrace {
   override def getMessage: String = msg
-} 
+}

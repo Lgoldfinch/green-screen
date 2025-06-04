@@ -25,7 +25,7 @@ object UserRoutes:
           NotFound(err.getMessage)
         }
       case authReq @ POST -> Root / "users" / UUIDVar(userUuid) / "account-access-consent" as user =>
-        ???
+        createAccountAccessConsent.run(???, ???, ???)
 //        val permissions = NonEmptyList.of(Permission.ReadTransactionsDetail, Permission.ReadAccountsDetail, Permission.ReadStatementsDetail)
 
 //        val createAccountAccessConsentRequest = CreateAccountAccessConsentsRequest(
