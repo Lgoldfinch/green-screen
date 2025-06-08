@@ -31,6 +31,6 @@ package object generators:
   )
 
   val instantGen: Gen[Instant] = Gen.calendar.map(_.toInstant)
-  
+
   val createdAtGen: Gen[CreatedAt] = instantGen.map(CreatedAt.apply)
 end generators

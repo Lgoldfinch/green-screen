@@ -55,9 +55,9 @@ object ExpirationDateTime {
 opaque type TransactionFromDateTime = Instant
 
 object TransactionFromDateTime {
-  def apply(instant: Instant): TransactionFromDateTime                                        = instant
+  def apply(instant: Instant): TransactionFromDateTime                        = instant
   extension (transactionFromDate: TransactionFromDateTime) def value: Instant = transactionFromDate
-  given transactionFromDateTimeEncoder: Encoder[TransactionFromDateTime] = Encoder.encodeInstant.contramap(_.value)
+  given transactionFromDateTimeEncoder: Encoder[TransactionFromDateTime]      = Encoder.encodeInstant.contramap(_.value)
 
 }
 opaque type TransactionToDateTime = Instant

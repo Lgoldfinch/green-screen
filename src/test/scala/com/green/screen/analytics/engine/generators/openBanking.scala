@@ -27,12 +27,13 @@ object openBanking:
 
   val transactionToDateTimeGen: Gen[TransactionToDateTime] = instantGen.map(TransactionToDateTime.apply)
 
-
   val createAccountAccessConsentsRequestBodyGen: Gen[CreateAccountAccessConsentsRequest] = for {
-    permissions <- nelGen(permissionGen)
-    expirationDate <- expirationDateTimeGen
-    transactionFromDate <- transactionFromDateTimeGen
+    permissions           <- nelGen(permissionGen)
+    expirationDate        <- expirationDateTimeGen
+    transactionFromDate   <- transactionFromDateTimeGen
     transactionToDateTime <- transactionToDateTimeGen
-  } yield CreateAccountAccessConsentsRequest(CreateAccountAccessConsentsRequestData(permissions, expirationDate, transactionFromDate, transactionToDateTime))
+  } yield CreateAccountAccessConsentsRequest(
+    CreateAccountAccessConsentsRequestData(permissions, expirationDate, transactionFromDate, transactionToDateTime)
+  )
 
 end openBanking

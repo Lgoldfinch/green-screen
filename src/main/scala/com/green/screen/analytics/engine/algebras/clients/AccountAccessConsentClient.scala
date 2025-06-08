@@ -6,35 +6,37 @@ import com.green.screen.analytics.engine.domain.*
 import eu.timepit.refined.api.Refined
 import org.http4s
 import org.http4s.*
-import org.http4s.Status.{BadRequest, NotFound}
+import org.http4s.Status.{ BadRequest, NotFound }
 import org.http4s.circe.CirceEntityCodec.*
 import org.http4s.client.dsl.Http4sClientDsl
-import org.http4s.client.{Client, UnexpectedStatus}
+import org.http4s.client.{ Client, UnexpectedStatus }
 import org.http4s.headers.`Content-Type`
 import org.typelevel.log4cats.Logger
 
 import scala.util.control.NoStackTrace
 
-trait AccountAccessConsentClient[F[_]]: 
+trait AccountAccessConsentClient[F[_]]:
   def setAccountAccessConsent(
       accountRequest: CreateAccountAccessConsentsRequest,
       bankPrefixPath: BankPrefix
-                             ): F[AccountAccessConsentsResponse]
+  ): F[AccountAccessConsentsResponse]
 
-  def getAccountAccessConsent(consentId: ConsentId,
-                              bankPrefixPath: BankPrefix
-                             ): F[AccountAccessConsentsResponse]
+  def getAccountAccessConsent(consentId: ConsentId, bankPrefixPath: BankPrefix): F[AccountAccessConsentsResponse]
 end AccountAccessConsentClient
 
 object AccountAccessConsentClient:
   def make[F[_]: Concurrent: Logger](client: Client[F]): AccountAccessConsentClient[F] =
     new AccountAccessConsentClient with Http4sClientDsl[F] {
-      
+
       private val handleErrors: PartialFunction[Throwable, Throwable] = {
         case UnexpectedStatus(BadRequest, _, requestUri) =>
-            AccountAccessConsentClientError(s"Was unable to get/set account access consent for request uri $requestUri, consent id was invalid")
+          AccountAccessConsentClientError(
+            s"Was unable to get/set account access consent for request uri $requestUri, consent id was invalid"
+          )
         case UnexpectedStatus(NotFound, _, requestUri) =>
-            AccountAccessConsentClientError(s"Was unable to get/set account access consent for request uri $requestUri, endpoint doesn't exist")
+          AccountAccessConsentClientError(
+            s"Was unable to get/set account access consent for request uri $requestUri, endpoint doesn't exist"
+          )
       }
 
       override def setAccountAccessConsent(
@@ -54,10 +56,10 @@ object AccountAccessConsentClient:
         } yield response
       }
 
-      override def getAccountAccessConsent(consentId: ConsentId,
-                                           bankPrefixPath: BankPrefix
-
-                                          ): F[AccountAccessConsentsResponse] =
+      override def getAccountAccessConsent(
+          consentId: ConsentId,
+          bankPrefixPath: BankPrefix
+      ): F[AccountAccessConsentsResponse] =
         for {
           getRequest <- http4s.Uri
             .fromString(bankPrefixPath.value + s"account-access-consents/$consentId")

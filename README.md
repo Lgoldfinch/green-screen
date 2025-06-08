@@ -8,6 +8,8 @@ An example application built from the [ce3.g8 template](https://github.com/typel
 sbt run
 ```
 
+
+Hello 
 ## Run tests
 
 ```shell
@@ -20,5 +22,5 @@ This template uses the `sbt-tpolecat` sbt plugin to set Scala compiler options t
 
 Need to rank companies based on emissions. Do we just order them by emissions? We can probably order by emissions for now. 
 
-For a user, we add all scores for a users transactions and give a rating. 
+32For a user, we add all scores for a users transactions and give a rating. 
 

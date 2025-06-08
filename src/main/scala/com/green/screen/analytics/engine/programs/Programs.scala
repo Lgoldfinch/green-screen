@@ -16,10 +16,10 @@ object Programs:
   def make[F[_]: MonadThrow: Logger: GenUUID](algebras: Algebras[F], clients: Clients[F]): Programs[F] =
     new Programs[F] {
       override val getUserScores: GetUserScores[F] = GetUserScores[F](algebras.users)
-      
+
       override val processTransaction: ProcessTransaction[F] =
         ProcessTransaction[F](algebras.companies, algebras.transactions)
-      
+
       override val createAccountAccessConsent: CreateAccountAccessConsent[F] =
         CreateAccountAccessConsent[F](clients.accountAccessConsentClient, algebras.userOpenApiData)
     }
