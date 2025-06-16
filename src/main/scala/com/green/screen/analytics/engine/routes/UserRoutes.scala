@@ -19,24 +19,10 @@ object UserRoutes:
     val dsl = new Http4sDsl[F] {}
     import dsl.*
 
-    AuthedRoutes.of {
-      case authReq @ GET -> Root / "users" / UUIDVar(userUuid) / "score" as _ =>
-        userScores.getScores(UserUuid(userUuid)).flatMap(Ok(_)).recoverWith { case err: UserNotFound =>
-          NotFound(err.getMessage)
-        }
-      case authReq @ POST -> Root / "users" / UUIDVar(userUuid) / "account-access-consent" as user =>
-        createAccountAccessConsent.run(???, ???, ???)
-//        val permissions = NonEmptyList.of(Permission.ReadTransactionsDetail, Permission.ReadAccountsDetail, Permission.ReadStatementsDetail)
-
-//        val createAccountAccessConsentRequest = CreateAccountAccessConsentsRequest(
-//          CreateAccountAccessConsentsRequestData(
-//              permissions,
-//
-//          )
-//        )
-//          createAccountAccessConsent.run( , UserUuid(userUuid)).flatMap(Ok(_)).recoverWith { case err: UserNotFound =>
-//          NotFound(err.getMessage)
-//        }
+    AuthedRoutes.of { case authReq @ GET -> Root / "users" / UUIDVar(userUuid) / "score" as _ =>
+      userScores.getScores(UserUuid(userUuid)).flatMap(Ok(_)).recoverWith { case err: UserNotFound =>
+        NotFound(err.getMessage)
+      }
     }
   }
 end UserRoutes

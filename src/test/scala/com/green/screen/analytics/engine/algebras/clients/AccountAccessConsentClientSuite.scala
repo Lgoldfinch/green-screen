@@ -35,7 +35,7 @@ class AccountAccessConsentClientSuite extends CatsEffectSuite with ScalaCheckEff
         }
 
         val getAccountAccessConsentResponse =
-          AccountAccessConsentClient.make[IO](client, bankPrefix).getAccountAccessConsent(consentId)
+          AccountAccessConsentClient.make[IO](client).getAccountAccessConsent(consentId, bankPrefix)
         val expectedAccountAccessConsentUrl = bankPrefix.value + "account-access-consents" + s"/$consentId"
 
         getAccountAccessConsentResponse.assertEquals(

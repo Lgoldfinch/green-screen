@@ -6,13 +6,7 @@ import com.green.screen.analytics.engine.algebras.UserOpenApiData
 import com.green.screen.analytics.engine.algebras.clients.AccountAccessConsentClient
 import com.green.screen.analytics.engine.domain.AccountAccessConsentsStatus.AWAU
 import com.green.screen.analytics.engine.domain.common.CreatedAt
-import com.green.screen.analytics.engine.domain.{
-  BankPrefix,
-  CreateAccountAccessConsentsRequest,
-  UserOpenApiDataDB,
-  UserOpenApiDataUuid,
-  UserUuid
-}
+import com.green.screen.analytics.engine.domain.*
 import com.green.screen.common.domain.effects.GenUUID
 import org.typelevel.log4cats.Logger
 

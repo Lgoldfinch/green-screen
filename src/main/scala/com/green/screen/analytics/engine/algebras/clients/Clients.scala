@@ -1,7 +1,6 @@
 package com.green.screen.analytics.engine.algebras.clients
 
 import cats.effect.Concurrent
-import com.green.screen.analytics.engine.domain.BankPrefix
 import org.http4s.client.Client
 import org.typelevel.log4cats.Logger
 
