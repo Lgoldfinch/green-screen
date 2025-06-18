@@ -68,8 +68,8 @@ class AccountAccessConsentClientSuite extends CatsEffectSuite with ScalaCheckEff
 
         val setAccountAccessConsentResponse =
           AccountAccessConsentClient
-            .make[IO](client, bankPrefix)
-            .setAccountAccessConsent(createAccountAccessConsentsRequestBody)
+            .make[IO](client)
+            .setAccountAccessConsent(createAccountAccessConsentsRequestBody, bankPrefix)
 
         val expectedAccountAccessConsentUrl = bankPrefix.value + "account-access-consents"
 
@@ -86,7 +86,7 @@ class AccountAccessConsentClientSuite extends CatsEffectSuite with ScalaCheckEff
     }
   }
 
-  val badResponsesGen = Gen.oneOf(List(NotFound, BadRequest))
+  private val badResponsesGen = Gen.oneOf(List(NotFound, BadRequest))
 
   test("A POST request should raise an error if ASPSP returns 400 or 404 ") {
     forAllF(bankPrefixGen, createAccountAccessConsentsRequestBodyGen, badResponsesGen) {
@@ -99,8 +99,8 @@ class AccountAccessConsentClientSuite extends CatsEffectSuite with ScalaCheckEff
 
         val setAccountAccessConsentResponse =
           AccountAccessConsentClient
-            .make[IO](client, bankPrefix)
-            .setAccountAccessConsent(createAccountAccessConsentsRequestBody)
+            .make[IO](client)
+            .setAccountAccessConsent(createAccountAccessConsentsRequestBody, bankPrefix)
 
         setAccountAccessConsentResponse.attempt
           .map(_.leftMap(_.isInstanceOf[AccountAccessConsentClientError]))
@@ -118,7 +118,7 @@ class AccountAccessConsentClientSuite extends CatsEffectSuite with ScalaCheckEff
         }
 
         val setAccountAccessConsentResponse =
-          AccountAccessConsentClient.make[IO](client, bankPrefix).getAccountAccessConsent(consentId)
+          AccountAccessConsentClient.make[IO](client).getAccountAccessConsent(consentId, bankPrefix)
 
         setAccountAccessConsentResponse.attempt
           .map(_.leftMap(_.isInstanceOf[AccountAccessConsentClientError]))
