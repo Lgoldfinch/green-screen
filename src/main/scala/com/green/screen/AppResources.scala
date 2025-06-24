@@ -9,7 +9,7 @@ import skunk.Session
 import skunk.codec.all.text
 import skunk.implicits.*
 import cats.syntax.all.*
-import com.green.screen.analytics.engine.config.DBConfig
+import com.green.screen.analytics.engine.config.config.DBConfig
 import natchez.Trace.Implicits.noop
 import org.http4s.client.Client
 import org.http4s.ember.client.EmberClientBuilder
@@ -36,12 +36,12 @@ object AppResources {
     def mkPostgresResource: Resource[F, Resource[F, Session[F]]] = {
       Session
         .pooled[F](
-          host = dbConfig.host,
-          port = dbConfig.port,
-          user = dbConfig.dbUser,
-          database = dbConfig.name,
-          password = Some(dbConfig.password),
-          max = dbConfig.poolSize
+          host = dbConfig.host.value.value,
+          port = dbConfig.port.value,
+          user = dbConfig.dbUser.value.value,
+          database = dbConfig.name.value.value,
+          password = Some(dbConfig.password.value.value),
+          max = dbConfig.poolSize.value
         )
         .evalTap(checkPostgresConnection)
     }

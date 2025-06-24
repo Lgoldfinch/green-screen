@@ -10,6 +10,7 @@ trait Programs[F[_]]:
   val getUserScores: GetUserScores[F]
   val processTransaction: ProcessTransaction[F]
   val createAccountAccessConsent: CreateAccountAccessConsent[F]
+  val perplexity: Perplexity[F]
 end Programs
 
 object Programs:
@@ -22,5 +23,8 @@ object Programs:
 
       override val createAccountAccessConsent: CreateAccountAccessConsent[F] =
         CreateAccountAccessConsent[F](clients.accountAccessConsentClient, algebras.userOpenApiData)
+
+      override val perplexity: Perplexity[F] =
+        Perplexity[F](clients.perplexityClient)
     }
 end Programs

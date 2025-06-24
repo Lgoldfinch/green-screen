@@ -64,7 +64,8 @@ object Dependencies {
 
   val Refined = List(
     "eu.timepit" %% "refined",
-    "eu.timepit" %% "refined-cats"
+    "eu.timepit" %% "refined-cats",
+    "eu.timepit" %% "refined-pureconfig"
   ).map(_ % Version.Refined)
 
   val Skunk = List(

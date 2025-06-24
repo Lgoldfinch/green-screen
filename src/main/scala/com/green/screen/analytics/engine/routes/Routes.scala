@@ -19,6 +19,7 @@ object Routes:
         .liftTo[F]
       userRoutes        = UserRoutes.routes(programs.getUserScores, programs.createAccountAccessConsent)
       transactionRoutes = TransactionRoutes.routes[F](programs.processTransaction)
-    } yield List(transactionRoutes, userRoutes).reduce(_ <+> _)
+      perplexity        = PerplexityRoutes.make[F](programs.perplexity)
+    } yield List(transactionRoutes, userRoutes, perplexity).reduce(_ <+> _)
   }
 end Routes

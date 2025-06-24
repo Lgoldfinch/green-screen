@@ -3,7 +3,7 @@ package com.green.screen
 import org.flywaydb.core.Flyway
 import cats.effect.Sync
 import cats.syntax.all.*
-import com.green.screen.analytics.engine.config.DBConfig
+import com.green.screen.analytics.engine.config.config.DBConfig
 import org.typelevel.log4cats.Logger
 
 final class SqlMigrator[F[_]: Sync: Logger](dbConfig: DBConfig) {
@@ -15,7 +15,7 @@ final class SqlMigrator[F[_]: Sync: Logger](dbConfig: DBConfig) {
       _ <- Sync[F].blocking(
         Flyway
           .configure()
-          .dataSource(url, dbConfig.dbUser, dbConfig.password)
+          .dataSource(url, dbConfig.dbUser.value.value, dbConfig.password.value.value)
           .load()
           .migrate()
       )
