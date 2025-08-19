@@ -6,13 +6,39 @@ import scala.collection.immutable.Seq
 ThisBuild / organization := "com.green.screen"
 ThisBuild / scalaVersion := Version.ScalaVersion
 ThisBuild / version      := "1.0.0"
+ThisBuild / name         := "green-screen"
 
-lazy val root = (project in file("."))
-  .enablePlugins(DockerPlugin, JavaServerAppPackaging)
+lazy val commonSettings = Seq(
+  fork := true,
+  scalafmtOnCompile := true
+)
+
+lazy val models = (project in file("models"))
+  .enablePlugins()
   .settings(
-  name := "green-screen",
-    fork := true,
-    scalafmtOnCompile := true,
+    commonSettings,
+    libraryDependencies ++= List.concat(
+      CatsEffect,
+      Circe,
+      FlywayDb,
+      Http4s,
+      Logback,
+      Logging,
+      PureConfig,
+      Refined,
+      Skunk
+    ) ++ List.concat(MunitTest,
+      MunitCatsEffect, MunitCatsEffectScalaCheck,
+      Weaver
+    ).map(_ % Test),
+    testFrameworks += new TestFramework("weaver.framework.CatsEffect")
+  )
+
+lazy val root = (project in file("src"))
+  .enablePlugins(DockerPlugin, JavaServerAppPackaging)
+  .dependsOn(models)
+  .settings(
+    commonSettings,
     libraryDependencies ++= List.concat(
     CatsEffect,
     Circe,
