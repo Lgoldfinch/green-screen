@@ -1,60 +1,67 @@
 import org.typelevel.sbt.tpolecat.*
 import Dependencies.*
 
-import scala.collection.immutable.Seq
-
 ThisBuild / organization := "com.green.screen"
 ThisBuild / scalaVersion := Version.ScalaVersion
 ThisBuild / version      := "1.0.0"
-ThisBuild / name         := "green-screen"
 
 lazy val commonSettings = Seq(
   fork := true,
   scalafmtOnCompile := true
 )
 
-lazy val models = (project in file("models"))
-  .enablePlugins()
+lazy val common = (project in file("common"))
   .settings(
     commonSettings,
+    name := "common",
     libraryDependencies ++= List.concat(
       CatsEffect,
       Circe,
-      FlywayDb,
-      Http4s,
-      Logback,
-      Logging,
       PureConfig,
       Refined,
       Skunk
     ) ++ List.concat(MunitTest,
       MunitCatsEffect, MunitCatsEffectScalaCheck,
       Weaver
-    ).map(_ % Test),
-    testFrameworks += new TestFramework("weaver.framework.CatsEffect")
+    ).map(_ % Test)
   )
 
-lazy val root = (project in file("src"))
-  .enablePlugins(DockerPlugin, JavaServerAppPackaging)
-  .dependsOn(models)
+lazy val ai = (project in file("ai"))
+  .dependsOn(common, common % "test->test")
   .settings(
     commonSettings,
     libraryDependencies ++= List.concat(
-    CatsEffect,
-    Circe,
-    FlywayDb,
-    Http4s,
-    Logback,
-    Logging,
-    PureConfig,
-    Refined,
-    Skunk
-  ) ++ List.concat(MunitTest,
-    MunitCatsEffect, MunitCatsEffectScalaCheck,
-    Weaver
-  ).map(_ % Test),
-    testFrameworks += new TestFramework("weaver.framework.CatsEffect")
-)
+      Http4s,
+      Logback,
+      Logging
+    ),
+    name := "ai"
+  )
+
+lazy val banking = (project in file("banking"))
+  .dependsOn(common, common % "test->test")
+  .settings(
+    commonSettings,
+    name := "banking",
+    libraryDependencies ++= List.concat(
+      Http4s,
+      Logback,
+      Logging
+    )
+  )
+
+// Root combines the different modules and packages the application as a Docker container
+lazy val root = (project in file("root"))
+  .enablePlugins(DockerPlugin, JavaServerAppPackaging)
+  .dependsOn(ai, banking)
+  .settings(
+    commonSettings,
+    name := "root",
+    libraryDependencies ++= List.concat(
+      FlywayDb
+    ),
+    Compile / run / mainClass := Some("com.green.screen.Server")
+  )
   .settings(
     Docker / packageName := "green-screen",
     Docker / version := version.value,
@@ -63,3 +70,11 @@ lazy val root = (project in file("src"))
 )
 
 //scalacOptions += "-Wnonunit-statement"
+
+Global / onChangedBuildSource := ReloadOnSourceChanges
+
+addCommandAlias("run", "root / run")
+addCommandAlias("compileAi", "ai / compile")
+addCommandAlias("compileBanking", "banking / compile")
+addCommandAlias("testAi", "ai / test")
+addCommandAlias("testBanking", "banking / test")
