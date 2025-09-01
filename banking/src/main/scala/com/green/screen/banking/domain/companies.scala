@@ -6,7 +6,7 @@ import com.green.screen.banking.domain.*
 import CompanyCo2EmissionsMetricTonnes.co2EmissionsCodec
 import CompanyName.*
 import CompanyUuid.*
-import com.green.screen.common.additionalSkunkCodecs.*
+import com.green.screen.common.db.*
 import eu.timepit.refined.types.string.NonEmptyString
 import skunk.*
 import skunk.codec.all.*

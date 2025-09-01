@@ -7,7 +7,7 @@ import skunk.codec.all.*
 import UserUuid.*
 import eu.timepit.refined.types.all.*
 import java.util.UUID
-import com.green.screen.common.additionalSkunkCodecs.*
+import com.green.screen.common.db.*
 
 final case class User(uuid: UserUuid)
 

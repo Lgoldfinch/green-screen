@@ -3,7 +3,7 @@ package com.green.screen.http
 import com.green.screen.banking.algebras.clients.*
 import com.green.screen.ai.algebras.clients.*
 import cats.effect.Concurrent
-import com.green.screen.ai.domain.Config.PerplexityConfig
+import com.green.screen.ai.domain.PerplexityConfig
 import org.http4s.client.Client
 import org.typelevel.log4cats.Logger
 

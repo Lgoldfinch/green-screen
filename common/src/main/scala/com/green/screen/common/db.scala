@@ -4,7 +4,7 @@ import eu.timepit.refined.types.all.*
 import skunk.*
 import skunk.data.Type
 
-object additionalSkunkCodecs {
+object db {
   val nesCodec: Codec[NonEmptyString] = Codec.simple[NonEmptyString](
     _.value,
     NonEmptyString.from,

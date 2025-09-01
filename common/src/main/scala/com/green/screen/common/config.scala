@@ -4,7 +4,7 @@ import eu.timepit.refined.api.Refined
 import eu.timepit.refined.string.Uri
 import eu.timepit.refined.types.string.NonEmptyString
 
-object Config {
+object config {
   opaque type ApiKey = NonEmptyString
 
   object ApiKey {

@@ -4,7 +4,7 @@ import cats.ApplicativeThrow
 import cats.data.NonEmptyVector
 import cats.effect.*
 import cats.syntax.all.*
-import com.green.screen.ai.domain.Config.PerplexityConfig
+import com.green.screen.ai.domain.PerplexityConfig
 import com.green.screen.ai.domain.perplexity.*
 import io.circe.syntax.*
 import org.http4s.circe.*

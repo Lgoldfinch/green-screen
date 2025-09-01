@@ -6,7 +6,7 @@ import ConsentId.*
 import UserOpenApiDataUuid.*
 import UserUuid.*
 import com.green.screen.common.misc.CreatedAt.*
-import com.green.screen.common.additionalSkunkCodecs.*
+import com.green.screen.common.db.*
 import com.green.screen.common.misc.*
 import eu.timepit.refined.api.Refined
 import eu.timepit.refined.string.EndsWith

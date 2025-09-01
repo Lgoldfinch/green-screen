@@ -1,7 +1,7 @@
 package com.green.screen.common.generators
 
 import cats.data.NonEmptyList
-import com.green.screen.common.Config.RefinedUri
+import com.green.screen.common.config.RefinedUri
 import com.green.screen.common.misc.CreatedAt
 import eu.timepit.refined.api.Refined
 import eu.timepit.refined.types.all.*
