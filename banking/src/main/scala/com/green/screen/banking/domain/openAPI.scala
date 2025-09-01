@@ -15,6 +15,7 @@ import io.circe.*
 import io.circe.derivation.*
 import io.circe.derivation.Configuration.default
 import skunk.codec.all.*
+import io.circe.refined.*
 
 import java.time.Instant
 import java.util.UUID
@@ -101,9 +102,9 @@ object ConsentId {
 
   extension (consentId: ConsentId) def value: NonEmptyString = consentId
 
-  given Encoder[ConsentId] = nesEncoder.contramap(_.value)
+  given (using enc: Encoder[NonEmptyString]): Encoder[ConsentId] = enc.contramap(_.value)
 
-  given Decoder[ConsentId] = nesDecoder.map(ConsentId.apply)
+  given (using dec: Decoder[NonEmptyString]): Decoder[ConsentId] = dec.map(ConsentId.apply)
 
   val consentIdCodec: skunk.Codec[ConsentId] =
     nesCodec.imap(ConsentId.apply)(_.value)

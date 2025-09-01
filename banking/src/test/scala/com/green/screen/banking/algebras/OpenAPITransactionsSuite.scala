@@ -2,11 +2,11 @@ package com.green.screen.banking.algebras
 
 import cats.effect.*
 import com.green.screen.banking.BankingPostgresSuite
-import com.green.screen.generators.companies.*
-import com.green.screen.generators.transactions.*
+import com.green.screen.banking.generators.companies.*
+import com.green.screen.banking.generators.transactions.*
 import weaver.*
 import weaver.scalacheck.*
-import com.green.screen.generators.users.*
+import com.green.screen.banking.generators.users.*
 
 object OpenAPITransactionsSuite extends BankingPostgresSuite:
   test("Should be able to create and retrieve transactions") { postgres =>

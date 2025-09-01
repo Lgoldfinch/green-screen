@@ -1,7 +1,7 @@
 package com.green.screen.banking.programs
 
 import org.scalacheck.effect.PropF.*
-import com.green.screen.generators.users.*
+import com.green.screen.banking.generators.users.*
 import com.green.screen.banking.algebras.Users
 import com.green.screen.banking.programs.GetUserScores.UserNotFound
 import munit.{ CatsEffectSuite, ScalaCheckEffectSuite }

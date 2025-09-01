@@ -1,10 +1,10 @@
-package com.green.screen.generators
+package com.green.screen.banking.generators
 
 import org.scalacheck.Gen
-import com.green.screen.generators.users.*
+import com.green.screen.banking.generators.users.*
 import com.green.screen.banking.domain.*
-import com.green.screen.common.generators.commonGenerators.*
-import com.green.screen.generators.companies.companyUuidGen
+import com.green.screen.common.generators.*
+import com.green.screen.banking.generators.companies.*
 
 object transactions {
   val transactionUuidGen: Gen[TransactionUuid] = Gen.uuid.map(TransactionUuid.apply)

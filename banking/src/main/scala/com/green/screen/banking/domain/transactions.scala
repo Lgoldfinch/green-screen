@@ -5,15 +5,16 @@ import cats.syntax.all.*
 import com.green.screen.common.misc.*
 import com.green.screen.banking.domain.TransactionAmount.*
 import com.green.screen.banking.domain.TransactionUuid.*
-import com.green.screen.common.misc.CreatedAt.createdAtCodec
 import com.green.screen.banking.domain.CompanyUuid.companyUuidCodec
-import com.green.screen.banking.domain.UserUuid.*
+import com.green.screen.banking.domain.UserUuid.userUuidCodec
+import com.green.screen.common.misc.CreatedAt.createdAtCodec
 import eu.timepit.refined.types.string.NonEmptyString
 import io.circe
 import io.circe.*
 import io.circe.generic.semiauto.*
 import skunk.Codec
 import skunk.codec.all.*
+import io.circe.refined.*
 
 import java.util.UUID
 
@@ -38,7 +39,7 @@ object TransactionAmount {
 
   extension (t: TransactionAmount) def value: Double = t
 
-  implicit val transactionAmountDecoder: Decoder[TransactionAmount] = Decoder.decodeDouble.map(TransactionAmount.apply)
+  given Decoder[TransactionAmount] = Decoder.decodeDouble.map(TransactionAmount.apply)
 }
 
 final case class OpenAPITransaction(
@@ -57,7 +58,7 @@ object OpenAPITransaction {
       (uuid, companyUuid, userUuid, amount, createdAt)
     }
 
-  implicit val openAPITransactionShow: Show[OpenAPITransaction] = Show.fromToString
+  given Show[OpenAPITransaction] = Show.fromToString
 }
 
 opaque type TransactionEntity = NonEmptyString
@@ -70,7 +71,7 @@ object TransactionEntity {
     def toCompanyName: CompanyName = CompanyName(entity)
   }
 
-  implicit val transactionEntityDecoder: Decoder[TransactionEntity] = nesDecoder.map(TransactionEntity.apply)
+  given (using enc: Decoder[NonEmptyString]): Decoder[TransactionEntity] = enc.map(TransactionEntity.apply)
 }
 
 final case class CreateTransactionRequest(

@@ -16,7 +16,7 @@ object User {
     userUuid
   }
 
-  implicit val userShow: Show[User] = Show.fromToString
+  given Show[User] = Show.fromToString
 }
 
 opaque type UserScore = NonNegDouble
@@ -25,8 +25,8 @@ object UserScore {
   def apply(value: NonNegDouble): UserScore            = value
   extension (value: UserScore) def value: NonNegDouble = value
 
-  val userScoreCodec: Codec[UserScore]       = nonNegDoubleCodec.imap(UserScore.apply)(_.value)
-  implicit val userScore: Encoder[UserScore] = Encoder.encodeDouble.contramap(_.value)
+  val userScoreCodec: Codec[UserScore] = nonNegDoubleCodec.imap(UserScore.apply)(_.value)
+  given Encoder[UserScore]             = Encoder.encodeDouble.contramap(_.value)
 }
 
 opaque type UserUuid = UUID
@@ -37,5 +37,5 @@ object UserUuid {
   val userUuidCodec: Codec[UserUuid] =
     uuid.imap(UserUuid.apply)(_.value)
 
-  implicit val userUuidDecoder: Decoder[UserUuid] = Decoder.decodeUUID.map(UserUuid.apply)
+  given Decoder[UserUuid] = Decoder.decodeUUID.map(UserUuid.apply)
 }

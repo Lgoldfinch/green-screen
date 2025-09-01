@@ -20,10 +20,9 @@ object CompanyUuid {
 
   extension (cUuid: CompanyUuid) def value: CompanyUuid = cUuid
 
-  val companyUuidCodec: Codec[CompanyUuid]     = uuid.imap(CompanyUuid.apply)(_.value)
-  implicit val ordering: Ordering[CompanyUuid] = _.compareTo(_)
-
-  implicit val eq: Eq[CompanyUuid] = Eq.fromUniversalEquals
+  val companyUuidCodec: Codec[CompanyUuid] = uuid.imap(CompanyUuid.apply)(_.value)
+  given Ordering[CompanyUuid]              = _.compareTo(_)
+  given Eq[CompanyUuid]                    = Eq.fromUniversalEquals
 
 }
 
@@ -58,5 +57,5 @@ object Company {
       case Company(uuid, name, co2Emissions) => (uuid, name, co2Emissions)
     }
 
-  implicit val companyShow: Show[Company] = Show.show(_.toString)
+  given Show[Company] = Show.show(_.toString)
 }

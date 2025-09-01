@@ -2,7 +2,7 @@ package com.green.screen.ai.generators
 
 import com.green.screen.ai.domain.*
 import com.green.screen.common.config.ApiKey
-import com.green.screen.common.generators.commonGenerators.*
+import com.green.screen.common.generators.*
 import com.green.screen.ai.domain.perplexity.*
 import org.scalacheck.Gen
 

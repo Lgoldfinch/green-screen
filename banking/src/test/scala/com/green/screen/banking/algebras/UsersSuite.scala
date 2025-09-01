@@ -1,14 +1,14 @@
 package com.green.screen.banking.algebras
 
-import com.green.screen.generators.companies.companyGen
-import com.green.screen.generators.transactions.openAPITransactionGen
-import com.green.screen.generators.users.*
+import com.green.screen.banking.generators.companies.companyGen
+import com.green.screen.banking.generators.transactions.openAPITransactionGen
+import com.green.screen.banking.generators.users.*
 import cats.effect.IO
 
 import scala.math.BigDecimal.RoundingMode
 import cats.syntax.all.*
 import com.green.screen.banking.BankingPostgresSuite
-import com.green.screen.common.generators.commonGenerators.*
+import com.green.screen.common.generators.*
 import com.green.screen.banking.domain.UserScore
 import eu.timepit.refined.types.all.NonNegDouble
 

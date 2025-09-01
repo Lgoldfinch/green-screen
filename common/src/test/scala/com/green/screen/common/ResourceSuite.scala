@@ -5,6 +5,7 @@ import cats.effect.kernel.Resource
 import cats.syntax.all.*
 import weaver.scalacheck.Checkers
 import weaver.{ Expectations, IOSuite }
+
 abstract class ResourceSuite extends IOSuite with Checkers {
   implicit class SharedResOps(res: Resource[IO, Res]) {
     def beforeAll(f: Res => IO[Unit]): Resource[IO, Res] =

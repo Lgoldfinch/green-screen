@@ -1,6 +1,6 @@
 package com.green.screen.banking.algebras.clients
 
-import com.green.screen.generators.openBanking.*
+import com.green.screen.banking.generators.openBanking.*
 import munit.{ CatsEffectSuite, ScalaCheckEffectSuite }
 import org.http4s
 import org.http4s.*

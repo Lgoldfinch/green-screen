@@ -2,8 +2,7 @@ package com.green.screen.banking.algebras
 
 import cats.effect.*
 import com.green.screen.banking.BankingPostgresSuite
-import com.green.screen.banking.domain.Company.companyShow
-import com.green.screen.generators.companies.*
+import com.green.screen.banking.generators.companies.*
 import weaver.*
 import weaver.scalacheck.*
 

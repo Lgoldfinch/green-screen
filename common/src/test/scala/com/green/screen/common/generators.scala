@@ -1,4 +1,4 @@
-package com.green.screen.common.generators
+package com.green.screen.common
 
 import cats.data.NonEmptyList
 import com.green.screen.common.config.RefinedUri
@@ -9,7 +9,7 @@ import org.scalacheck.Gen
 
 import java.time.Instant
 
-object commonGenerators:
+object generators:
   def nelGen[A](a: Gen[A]): Gen[NonEmptyList[A]] = for {
     head <- a
     tail <- Gen.listOf(a)
@@ -53,4 +53,4 @@ object commonGenerators:
       path   <- Gen.option(Gen.alphaStr).map(_.getOrElse(""))
       raw = s"$scheme://$host/$path"
     } yield Refined.unsafeApply(raw)
-end commonGenerators
+end generators
