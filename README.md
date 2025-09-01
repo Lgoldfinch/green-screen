@@ -1,26 +1,40 @@
-# environ-mental
+# Green Screen
 
-An example application built from the [ce3.g8 template](https://github.com/typelevel/ce3.g8).
+These docs are written by ChatGPT. So whilst it reads nicely, the true purpose of this project is to be determined! A lot of it is experimental, toying around with Scala 3 and its new features.
 
-## Run application
+## Overview
 
-```shell
-sbt run
-```
+Green Screen is a modular Scala application designed to bridge OpenBanking data with AI-driven insights. The project is split into two main domains:
 
+1. **Banking**: Integrates with OpenBanking APIs to collect and process financial data for insights.
+2. **AI**: Interacts with AI agents and models, leveraging collected data for advanced analytics and automation.
 
-Hello 
-## Run tests
+## Project Structure
+
+- **ai/**: Handles AI agent integrations (e.g., Perplexity integration).
+- **banking/**: Manages OpenBanking data ingestion, user transactions, and related business logic.
+- **common/**: Shared utilities, effects, and configuration used across modules.
+- **root/**: Contains the main application entry point and server setup. Aggregates routes from both domains.
+
+## Prerequisites
+
+- [Docker](https://www.docker.com/)
+- [SBT](https://www.scala-sbt.org/) (Scala Build Tool)
+- Java 21+
+
+## Setup & Running
+
+1. Start required services:
+   ```shell
+   docker-compose up -d
+   ```
+2. Run the application:
+   ```shell
+   sbt run
+   ```
+
+## Running Tests
 
 ```shell
 sbt test
 ```
-
-## sbt-tpolecat
-
-This template uses the `sbt-tpolecat` sbt plugin to set Scala compiler options to recommended defaults. If you want to change these defaults or find out about the different modes the plugin can operate in you can find out [here](https://github.com/typelevel/sbt-tpolecat/).
-
-Need to rank companies based on emissions. Do we just order them by emissions? We can probably order by emissions for now. 
-
-32For a user, we add all scores for a users transactions and give a rating. 
-
