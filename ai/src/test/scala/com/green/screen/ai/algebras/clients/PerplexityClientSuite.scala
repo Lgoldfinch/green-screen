@@ -1,5 +1,6 @@
 package com.green.screen.ai.algebras.clients
 
+import cats.data.NonEmptyVector
 import cats.effect.*
 import cats.syntax.all.*
 import com.green.screen.ai.domain.perplexity.*
@@ -18,37 +19,7 @@ import org.typelevel.log4cats.noop.NoOpLogger
 class PerplexityClientSuite extends CatsEffectSuite with ScalaCheckEffectSuite {
 
   implicit val logger: SelfAwareStructuredLogger[IO] = NoOpLogger[IO]
-
-//  given mct(using m: Monad[Id]): MonadCancelThrow[Id] = {
-//    new MonadCancelThrow[Id] {
-//      override def pure[A](a: A): Id[A] = m.pure(a)
-//
-//      override def flatMap[A, B](fa: Id[A])(f: A => Id[B]): Id[B] =
-//        m.flatMap(fa)(f)
-//
-//      override def handleErrorWith[A](fa: Id[A])(f: Throwable => Id[A]): Id[A] =
-//        try fa
-//        catch case NonFatal(e) => f(e)
-//
-//      override def raiseError[A](e: Throwable): Id[A] =
-//        throw e
-//
-//      override def tailRecM[A, B](a: A)(f: A => Id[Either[A, B]]): Id[B] = {
-//        ???
-//      }
-//
-//      override def uncancelable[A](body: Poll[Id] => Id[A]): Id[A] =
-//        ???
-//
-//      override def forceR[A, B](fa: Id[A])(fb: Id[B]): Id[B] =
-//        ???
-//
-//      override def onCancel[A](fa: Id[A], fin: Id[Unit]): Id[A] =
-//        // No cancellation logic in this toy effect, so just run `fa`
-//        ???
-//    }
-//  }
-
+  
   def routes(mkResponse: IO[Response[IO]]): HttpApp[IO] = {
     HttpRoutes
       .of[IO] { case POST -> root / _ / "chat" / "completions" =>
@@ -67,7 +38,7 @@ class PerplexityClientSuite extends CatsEffectSuite with ScalaCheckEffectSuite {
 
       val perplexityClient: PerplexityClient[IO] = PerplexityClient.make[IO](client, config)
 
-      val messages = perplexityMessages.appended(perplexityMessage)
+      val messages = NonEmptyVector.fromVectorUnsafe(perplexityMessages.appended(perplexityMessage).toVector)
 
       perplexityClient.chat(messages).attempt.map {
         case Left(_: PerplexityRoleException) => assert(true)
@@ -89,7 +60,7 @@ class PerplexityClientSuite extends CatsEffectSuite with ScalaCheckEffectSuite {
 
       val perplexityClient: PerplexityClient[IO] = PerplexityClient.make[IO](client, config)
 
-      val messages = perplexityMessages.appended(perplexityMessage)
+      val messages = NonEmptyVector.fromVectorUnsafe(perplexityMessages.appended(perplexityMessage).toVector)
 
       perplexityClient.chat(messages).attempt.map {
         case Left(err: PerplexityErrorResponse) =>
@@ -142,7 +113,7 @@ class PerplexityClientSuite extends CatsEffectSuite with ScalaCheckEffectSuite {
 
       val perplexityClient: PerplexityClient[IO] = PerplexityClient.make[IO](client, config)
 
-      val messages = perplexityMessages.appended(perplexityMessage)
+      val messages = NonEmptyVector.fromVectorUnsafe(perplexityMessages.appended(perplexityMessage).toVector)
 
       val result = perplexityClient.chat(messages)
 

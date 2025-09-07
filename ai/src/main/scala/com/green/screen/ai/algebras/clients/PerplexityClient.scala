@@ -15,7 +15,7 @@ import org.typelevel.ci.CIString
 import org.typelevel.log4cats.Logger
 
 trait PerplexityClient[F[_]]:
-  def chat(messages: List[PerplexityMessage]): F[PerplexityResponse]
+  def chat(messages: NonEmptyVector[PerplexityMessage]): F[PerplexityResponse]
 end PerplexityClient
 
 object PerplexityClient {
@@ -24,16 +24,15 @@ object PerplexityClient {
       config: PerplexityConfig
   )(using Concurrent[F], Logger[F]): PerplexityClient[F] = {
     new PerplexityClient[F] {
-
       private val authHeader        = Header.Raw(CIString("Authorization"), s"Bearer ${config.apiKey}")
       private val contentTypeHeader = Header.Raw(CIString("Content-Type"), "application/json")
 
-      override def chat(messages: List[PerplexityMessage]): F[PerplexityResponse] = {
+      override def chat(messages: NonEmptyVector[PerplexityMessage]): F[PerplexityResponse] = {
         import eu.timepit.refined.auto.autoUnwrap
         for {
           uri <- Uri.fromString(config.baseUri.value).map(_.addPath("chat").addPath("completions")).liftTo[F]
           requestBody <- PerplexityRequest
-            .buildRequest(config.model, NonEmptyVector.fromVectorUnsafe(messages.toVector))
+            .buildRequest(config.model, messages)
             .liftTo[F]
           request = Request[F](
             method = Method.POST,
