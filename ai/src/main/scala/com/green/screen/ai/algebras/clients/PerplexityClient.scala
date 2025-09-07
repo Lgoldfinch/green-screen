@@ -19,10 +19,10 @@ trait PerplexityClient[F[_]]:
 end PerplexityClient
 
 object PerplexityClient {
-  def make[F[_]: Concurrent: Logger](
+  def make[F[_]](
       httpClient: Client[F],
       config: PerplexityConfig
-  ): PerplexityClient[F] = {
+  )(using Concurrent[F], Logger[F]): PerplexityClient[F] = {
     new PerplexityClient[F] {
 
       private val authHeader        = Header.Raw(CIString("Authorization"), s"Bearer ${config.apiKey}")
