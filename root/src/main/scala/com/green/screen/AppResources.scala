@@ -4,7 +4,7 @@ import cats.effect.Resource
 import cats.effect.kernel.{ Async, Temporal }
 import cats.effect.std.Console
 import fs2.io.net.Network
-import org.typelevel.log4cats.Logger
+import org.typelevel.log4cats.{ Logger, LoggerFactory }
 import skunk.Session
 import skunk.codec.all.text
 import skunk.implicits.*
@@ -20,9 +20,9 @@ sealed abstract class AppResources[F[_]](
 )
 
 object AppResources {
-  def make[F[_]: Console: Logger: Async: Network: Temporal](
+  def make[F[_]](
       dbConfig: DBConfig
-  ): Resource[F, AppResources[F]] = {
+  )(using Console[F], Async[F], Network[F], Temporal[F], Logger[F]): Resource[F, AppResources[F]] = {
     def checkPostgresConnection(
         postgres: Resource[F, Session[F]]
     ): F[Unit] = {

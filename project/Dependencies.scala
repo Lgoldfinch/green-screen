@@ -2,11 +2,11 @@ import sbt.*
 
 object Dependencies {
   object Version {
-    val ScalaVersion = "3.4.2"
-    val CatsEffect = "3.5.4"
+    val ScalaVersion = "3.7.0"
+    val CatsEffect = "3.6.3"
     val Circe = "0.14.1"
     val CirceRefined = "0.15.1"
-    val Http4s = "0.23.27"
+    val Http4s = "0.23.30"
     val Skunk = "0.6.4"
     val Logback = "1.2.6"
     val Log4Cats     = "2.2.0"

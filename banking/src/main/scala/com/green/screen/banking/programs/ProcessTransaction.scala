@@ -12,7 +12,10 @@ import com.green.screen.common.misc.CreatedAt
 import java.util.UUID
 import scala.util.control.NoStackTrace
 
-class ProcessTransaction[F[_]: MonadThrow: GenUUID](companies: Companies[F], transactions: OpenAPITransactions[F]):
+class ProcessTransaction[F[_]](companies: Companies[F], transactions: OpenAPITransactions[F])(using
+    MonadThrow[F],
+    GenUUID[F]
+):
   def createTransaction(request: CreateTransactionRequest): F[Unit] = {
 
     val companyName = request.name.toCompanyName

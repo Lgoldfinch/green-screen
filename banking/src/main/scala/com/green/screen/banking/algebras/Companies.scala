@@ -25,35 +25,36 @@ trait Companies[F[_]] {
 }
 
 object Companies:
-  def make[F[_]: MonadCancelThrow: Concurrent](resource: Resource[F, Session[F]]): Companies[F] = new Companies[F]:
-    override def createCompanies(cs: NonEmptyList[Company]): F[Unit] = {
-      val companies = cs.toList
-      resource.use(
-        _.prepare(queryInsertCompanies(companies)).flatMap(
-          _.execute(companies).void
+  def make[F[_]](resource: Resource[F, Session[F]])(using MonadCancelThrow[F], Concurrent[F]): Companies[F] =
+    new Companies[F]:
+      override def createCompanies(cs: NonEmptyList[Company]): F[Unit] = {
+        val companies = cs.toList
+        resource.use(
+          _.prepare(queryInsertCompanies(companies)).flatMap(
+            _.execute(companies).void
+          )
+        )
+      }
+
+      override def createCompany(cs: Company): F[Unit] = {
+        resource.use(
+          _.prepare(companyCommand).flatMap(
+            _.execute((cs.uuid, cs.name, cs.co2Emissions, cs.name.value.value)).void
+          )
+        )
+      }
+
+      override def getCompany(companyUuid: CompanyUuid): F[Option[Company]] = resource.use(
+        _.prepare(queryGetCompany).flatMap(
+          _.option(companyUuid)
         )
       )
-    }
 
-    override def createCompany(cs: Company): F[Unit] = {
-      resource.use(
-        _.prepare(companyCommand).flatMap(
-          _.execute((cs.uuid, cs.name, cs.co2Emissions, cs.name.value.value)).void
+      override def getCompanyUuidByName(companyName: CompanyName): F[Option[(CompanyUuid)]] = resource.use(
+        _.prepare(queryGetUuidByName).flatMap(
+          _.option((CompanyName(companyName.value), CompanyName(companyName.value))).map(_.map(_._1))
         )
       )
-    }
-
-    override def getCompany(companyUuid: CompanyUuid): F[Option[Company]] = resource.use(
-      _.prepare(queryGetCompany).flatMap(
-        _.option(companyUuid)
-      )
-    )
-
-    override def getCompanyUuidByName(companyName: CompanyName): F[Option[(CompanyUuid)]] = resource.use(
-      _.prepare(queryGetUuidByName).flatMap(
-        _.option((CompanyName(companyName.value), CompanyName(companyName.value))).map(_.map(_._1))
-      )
-    )
 
 end Companies
 

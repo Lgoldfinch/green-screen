@@ -1,4 +1,3 @@
-import org.typelevel.sbt.tpolecat.*
 import Dependencies.*
 
 ThisBuild / organization := "com.green.screen"
@@ -12,8 +11,9 @@ lazy val commonSettings = Seq(
 
 lazy val common = (project in file("common"))
   .settings(
-    commonSettings,
     name := "common",
+    scalacOptions ++= Seq("-Xkind-projector"),
+    commonSettings,
     libraryDependencies ++= List.concat(
       CatsEffect,
       Circe,
@@ -29,20 +29,20 @@ lazy val common = (project in file("common"))
 lazy val ai = (project in file("ai"))
   .dependsOn(common, common % "test->test")
   .settings(
+    name := "ai",
     commonSettings,
     libraryDependencies ++= List.concat(
       Http4s,
       Logback,
       Logging
-    ),
-    name := "ai"
+    )
   )
 
 lazy val banking = (project in file("banking"))
   .dependsOn(common, common % "test->test")
   .settings(
-    commonSettings,
     name := "banking",
+    commonSettings,
     libraryDependencies ++= List.concat(
       Http4s,
       Logback,
@@ -55,8 +55,8 @@ lazy val root = (project in file("root"))
   .enablePlugins(DockerPlugin, JavaServerAppPackaging)
   .dependsOn(ai, banking)
   .settings(
-    commonSettings,
     name := "root",
+    commonSettings,
     libraryDependencies ++= List.concat(
       FlywayDb
     ),
@@ -68,8 +68,6 @@ lazy val root = (project in file("root"))
     dockerBaseImage := "openjdk:21",
     dockerExposedPorts ++= Seq(8080)
 )
-
-//scalacOptions += "-Wnonunit-statement"
 
 Global / onChangedBuildSource := ReloadOnSourceChanges
 

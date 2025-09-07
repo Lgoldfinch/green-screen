@@ -12,10 +12,10 @@ import org.typelevel.log4cats.Logger
 
 import java.time.Instant
 
-final class CreateAccountAccessConsent[F[_]: MonadThrow: Logger: GenUUID](
+final class CreateAccountAccessConsent[F[_]](
     accountAccessConsentClient: AccountAccessConsentClient[F],
     userOpenApiData: UserOpenApiData[F]
-):
+)(using MonadThrow[F], Logger[F], GenUUID[F]):
   def run(request: CreateAccountAccessConsentsRequest, bankPrefix: BankPrefix, userUuid: UserUuid): F[Unit] =
     for {
       response <- accountAccessConsentClient.setAccountAccessConsent(request, bankPrefix)

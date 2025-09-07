@@ -13,10 +13,10 @@ import org.http4s.dsl.Http4sDsl
 import org.typelevel.log4cats.Logger
 
 object UserRoutes:
-  def routes[F[_]: Concurrent: Logger](
+  def routes[F[_]](
       userScores: GetUserScores[F],
       createAccountAccessConsent: CreateAccountAccessConsent[F]
-  ): AuthedRoutes[UserType, F] = {
+  )(using Concurrent[F], Logger[F]): AuthedRoutes[UserType, F] = {
     val dsl = new Http4sDsl[F] {}
     import dsl.*
 

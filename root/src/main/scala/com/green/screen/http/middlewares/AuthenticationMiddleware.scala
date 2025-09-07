@@ -10,7 +10,7 @@ import org.http4s.server.AuthMiddleware
 import org.typelevel.ci.CIString
 
 class AuthenticationMiddleware[F[_]: Sync] {
-  private val authenticate: Kleisli[OptionT[F, *], Request[F], UserType] =
+  private val authenticate: Kleisli[[A] =>> OptionT[F, A], Request[F], UserType] =
     Kleisli { request =>
       // Will be implementing JWT authentication eventually.
       val apiKeyOpt = request.headers.get(CIString("top-secret-api-key")).map(_.head)

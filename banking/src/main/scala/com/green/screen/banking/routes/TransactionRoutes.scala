@@ -12,7 +12,9 @@ import org.http4s.dsl.Http4sDsl
 import org.typelevel.log4cats.Logger
 
 object TransactionRoutes:
-  def routes[F[_]: Concurrent: Logger](processTransaction: ProcessTransaction[F]): AuthedRoutes[UserType, F] = {
+  def routes[F[_]](
+      processTransaction: ProcessTransaction[F]
+  )(using Concurrent[F], Logger[F]): AuthedRoutes[UserType, F] = {
     val dsl = new Http4sDsl[F] {}
     import dsl.*
 
