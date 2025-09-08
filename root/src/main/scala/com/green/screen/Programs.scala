@@ -15,7 +15,7 @@ trait Programs[F[_]]:
 end Programs
 
 object Programs:
-  def make[F[_]: MonadThrow: Logger: GenUUID](algebras: Algebras[F], clients: Clients[F]): Programs[F] =
+  def make[F[_]: {MonadThrow, Logger, GenUUID}](algebras: Algebras[F], clients: Clients[F]): Programs[F] =
     new Programs[F] {
       override val getUserScores: GetUserScores[F] = GetUserScores[F](algebras.users)
 

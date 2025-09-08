@@ -7,7 +7,7 @@ import com.green.screen.banking.programs.GetUserScores.UserNotFound
 import munit.{ CatsEffectSuite, ScalaCheckEffectSuite }
 import cats.effect.IO
 import cats.syntax.all.*
-import com.green.screen.banking.domain.*
+import com.green.screen.banking.domain.users.*
 
 class GetUserScoresSuite extends CatsEffectSuite with ScalaCheckEffectSuite {
 

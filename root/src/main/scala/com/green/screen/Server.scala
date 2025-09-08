@@ -25,7 +25,7 @@ object Server extends IOApp:
       programs = Programs.make[IO](algebras, clients)
       routes <- Resource.eval(Routes.make(programs))
       routesWithPatheticAuth = AuthenticationMiddleware[IO].authedMiddleware(routes).orNotFound
-      httpAppWithLogging = Logger.httpApp[IO](
+      httpAppWithLogging     = Logger.httpApp[IO](
         logHeaders = true,
         logBody = true
       )(routesWithPatheticAuth)

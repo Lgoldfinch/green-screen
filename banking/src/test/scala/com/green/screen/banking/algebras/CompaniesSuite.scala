@@ -19,7 +19,7 @@ object CompaniesSuite extends BankingPostgresSuite:
 
   test("Should be able to retrieve a company by name") { postgres =>
     val companiesAlgebra: Companies[IO] = Companies.make[IO](postgres)
-    val gen = for {
+    val gen                             = for {
       company1 <- companyGen
       company2 <- companyGen
     } yield (company1, company2)

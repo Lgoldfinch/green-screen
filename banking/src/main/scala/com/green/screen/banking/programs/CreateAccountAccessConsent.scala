@@ -5,8 +5,9 @@ import cats.{ ApplicativeThrow, MonadThrow }
 import com.green.screen.banking.algebras.UserOpenApiData
 import com.green.screen.banking.algebras.clients.AccountAccessConsentClient
 import com.green.screen.common.effects.GenUUID
-import com.green.screen.banking.domain.*
-import com.green.screen.banking.domain.AccountAccessConsentsStatus.AWAU
+import com.green.screen.banking.domain.users.*
+import com.green.screen.banking.domain.openAPI.*
+import com.green.screen.banking.domain.openAPI.AccountAccessConsentsStatus.AWAU
 import com.green.screen.common.misc.CreatedAt
 import org.typelevel.log4cats.Logger
 
@@ -19,7 +20,7 @@ final class CreateAccountAccessConsent[F[_]](
   def run(request: CreateAccountAccessConsentsRequest, bankPrefix: BankPrefix, userUuid: UserUuid): F[Unit] =
     for {
       response <- accountAccessConsentClient.setAccountAccessConsent(request, bankPrefix)
-      _ <- ApplicativeThrow[F].raiseWhen(response.status != AWAU)(
+      _        <- ApplicativeThrow[F].raiseWhen(response.status != AWAU)(
         new RuntimeException(
           s"Account access consent status should be AWAU, but instead got ${response.status} for User: $userUuid"
         )

@@ -2,7 +2,7 @@ package com.green.screen.banking.programs
 
 import com.green.screen.banking.algebras.Users
 import cats.effect.IO
-import com.green.screen.banking.domain.*
+import com.green.screen.banking.domain.users.*
 
 private class TestUsers extends Users[IO] {
   override def createUser(user: User): IO[Unit] = ???

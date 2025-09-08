@@ -4,9 +4,7 @@ import cats.effect.Resource
 import cats.effect.kernel.{ Concurrent, MonadCancelThrow }
 import cats.syntax.all.*
 import UserOpenApiDataSql.*
-import com.green.screen.banking.domain.UserOpenApiDataDB.*
-import com.green.screen.banking.domain.*
-import com.green.screen.banking.domain.UserOpenApiDataDB
+import com.green.screen.banking.domain.openAPI.*
 import skunk.syntax.all.*
 import skunk.*
 
@@ -15,7 +13,7 @@ trait UserOpenApiData[F[_]]:
 end UserOpenApiData
 
 object UserOpenApiData:
-  def make[F[_]: MonadCancelThrow: Concurrent](resource: Resource[F, Session[F]]): UserOpenApiData[F] =
+  def make[F[_]](resource: Resource[F, Session[F]])(using MonadCancelThrow[F], Concurrent[F]): UserOpenApiData[F] =
     new UserOpenApiData[F] {
       override def create(userOpenApiDataDB: UserOpenApiDataDB): F[Unit] = resource.use(
         _.prepare(insertUserOpenApiDataCommand)

@@ -1,7 +1,7 @@
 package com.green.screen.banking.generators
 
 import org.scalacheck.Gen
-import com.green.screen.banking.domain.*
+import com.green.screen.banking.domain.users.*
 import com.green.screen.common.generators.*
 
 object users:

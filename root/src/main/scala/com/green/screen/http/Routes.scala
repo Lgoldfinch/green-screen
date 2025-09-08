@@ -5,7 +5,7 @@ import cats.effect.Concurrent
 import cats.syntax.all.*
 import com.green.screen.Programs
 import com.green.screen.ai.routes.*
-import com.green.screen.banking.domain.BankPrefix
+import com.green.screen.banking.domain.openAPI.BankPrefix
 import com.green.screen.banking.routes.*
 import com.green.screen.common.auth.UserType
 import eu.timepit.refined.api.RefType

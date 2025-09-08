@@ -5,12 +5,7 @@ import cats.effect.*
 import cats.effect.kernel.{ Concurrent, MonadCancelThrow, Resource }
 import cats.syntax.all.*
 import CompaniesSQL.*
-import com.green.screen.banking.domain.*
-import com.green.screen.banking.domain.Company.companyCodec
-import com.green.screen.banking.domain.CompanyUuid.companyUuidCodec
-import com.green.screen.banking.domain.CompanyName.companyNameCodec
-import com.green.screen.banking.domain.CompanyCo2EmissionsMetricTonnes.co2EmissionsCodec
-import com.green.screen.banking.domain.{ Company, CompanyCo2EmissionsMetricTonnes, CompanyName, CompanyUuid }
+import com.green.screen.banking.domain.companies.*
 import skunk.*
 import skunk.syntax.all.*
 import skunk.codec.all.*

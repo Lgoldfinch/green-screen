@@ -9,7 +9,7 @@ import scala.math.BigDecimal.RoundingMode
 import cats.syntax.all.*
 import com.green.screen.banking.BankingPostgresSuite
 import com.green.screen.common.generators.*
-import com.green.screen.banking.domain.UserScore
+import com.green.screen.banking.domain.users.UserScore
 import eu.timepit.refined.types.all.NonNegDouble
 
 object UsersSuite extends BankingPostgresSuite:

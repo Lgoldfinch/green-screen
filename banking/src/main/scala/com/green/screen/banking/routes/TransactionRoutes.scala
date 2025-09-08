@@ -2,7 +2,7 @@ package com.green.screen.banking.routes
 
 import cats.effect.Concurrent
 import cats.syntax.all.*
-import com.green.screen.banking.domain.CreateTransactionRequest
+import com.green.screen.banking.domain.transactions.CreateTransactionRequest
 import com.green.screen.banking.programs.ProcessTransaction.CompanyNotFound
 import com.green.screen.banking.programs.ProcessTransaction
 import com.green.screen.common.auth.UserType

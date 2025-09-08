@@ -1,10 +1,9 @@
 package com.green.screen.banking.programs
 
 import cats.MonadThrow
-import com.green.screen.banking.domain.*
+import com.green.screen.banking.domain.users.*
 import cats.syntax.all.*
 import com.green.screen.banking.algebras.Users
-import com.green.screen.banking.domain.{ UserScore, UserUuid }
 
 import scala.util.control.NoStackTrace
 

@@ -1,16 +1,12 @@
 package com.green.screen.banking.algebras
 
 import cats.effect.kernel.{ Concurrent, MonadCancelThrow, Resource }
-import com.green.screen.banking.domain.*
 import cats.syntax.all.*
 import skunk.Session
 import skunk.*
 import skunk.syntax.all.*
-import com.green.screen.banking.domain.UserUuid.*
-import com.green.screen.banking.domain.User.*
-import com.green.screen.banking.domain.UserScore.*
+import com.green.screen.banking.domain.users.*
 import UsersSQL.*
-import com.green.screen.banking.domain.{ User, UserScore, UserUuid }
 
 trait Users[F[_]]:
   def createUser(user: User): F[Unit]
@@ -21,7 +17,7 @@ trait Users[F[_]]:
 end Users
 
 object Users:
-  def make[F[_]: MonadCancelThrow: Concurrent](resource: Resource[F, Session[F]]): Users[F] = new Users[F] {
+  def make[F[_]](resource: Resource[F, Session[F]])(using MonadCancelThrow[F], Concurrent[F]): Users[F] = new Users[F] {
     override def createUser(user: User): F[Unit] = resource.use(
       _.prepare(insertUserCommand)
         .flatMap(

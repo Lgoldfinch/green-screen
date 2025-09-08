@@ -2,13 +2,7 @@ package com.green.screen.banking.algebras.clients
 
 import cats.effect.kernel.Concurrent
 import cats.syntax.all.*
-import com.green.screen.banking.domain.*
-import com.green.screen.banking.domain.{
-  AccountAccessConsentsResponse,
-  BankPrefix,
-  ConsentId,
-  CreateAccountAccessConsentsRequest
-}
+import com.green.screen.banking.domain.openAPI.*
 import eu.timepit.refined.api.Refined
 import org.http4s
 import org.http4s.*

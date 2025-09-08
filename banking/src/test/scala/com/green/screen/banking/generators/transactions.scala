@@ -2,7 +2,9 @@ package com.green.screen.banking.generators
 
 import org.scalacheck.Gen
 import com.green.screen.banking.generators.users.*
-import com.green.screen.banking.domain.*
+import com.green.screen.banking.domain.companies.CompanyUuid
+import com.green.screen.banking.domain.transactions.*
+import com.green.screen.banking.domain.users.*
 import com.green.screen.common.generators.*
 import com.green.screen.banking.generators.companies.*
 

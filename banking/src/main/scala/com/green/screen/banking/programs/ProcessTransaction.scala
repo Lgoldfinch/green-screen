@@ -1,9 +1,9 @@
 package com.green.screen.banking.programs
 
 import cats.MonadThrow
-import com.green.screen.banking.domain.*
+import com.green.screen.banking.domain.transactions.*
+import com.green.screen.banking.domain.companies.CompanyName
 import cats.syntax.all.*
-import com.green.screen.banking.domain.TransactionEntity.*
 import ProcessTransaction.CompanyNotFound
 import com.green.screen.banking.algebras.{ Companies, OpenAPITransactions }
 import com.green.screen.common.effects.GenUUID

@@ -4,9 +4,8 @@ import cats.effect.kernel.{ Concurrent, MonadCancelThrow, Resource }
 import cats.syntax.all.*
 import com.green.screen.*
 import com.green.screen.banking.algebras.TransactionsSQL.*
-import com.green.screen.banking.domain.*
-import com.green.screen.banking.domain.CompanyUuid.companyUuidCodec
-import com.green.screen.banking.domain.OpenAPITransaction.openAPITransactionCodec
+import com.green.screen.banking.domain.companies.*
+import com.green.screen.banking.domain.transactions.*
 import org.typelevel.log4cats.Logger
 import skunk.*
 import skunk.syntax.all.*

@@ -1,6 +1,6 @@
 package com.green.screen.common
 
-import io.circe.*
+import io.circe.{ Decoder, Encoder }
 import skunk.Codec
 import skunk.codec.all.*
 
