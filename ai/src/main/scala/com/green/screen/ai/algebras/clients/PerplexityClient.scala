@@ -6,6 +6,7 @@ import cats.effect.*
 import cats.syntax.all.*
 import com.green.screen.ai.domain.PerplexityConfig
 import com.green.screen.ai.domain.perplexity.*
+import com.green.screen.ai.domain.PerplexityBaseUri.stringify
 import io.circe.syntax.*
 import org.http4s.circe.*
 import org.http4s.circe.CirceEntityCodec.circeEntityDecoder
@@ -28,15 +29,14 @@ object PerplexityClient {
       private val contentTypeHeader = Header.Raw(CIString("Content-Type"), "application/json")
 
       override def chat(messages: NonEmptyVector[PerplexityMessage]): F[PerplexityResponse] = {
-        import eu.timepit.refined.auto.autoUnwrap
         for {
-          uri <- Uri.fromString(config.baseUri.value).map(_.addPath("chat").addPath("completions")).liftTo[F]
+          uri <- Uri.fromString(config.baseUri.stringify).map(_.addPath("chat").addPath("completions")).liftTo[F]
           requestBody <- PerplexityRequest
             .buildRequest(config.model, messages)
             .liftTo[F]
           request = Request[F](
-            method = Method.POST,
-            uri = uri
+            Method.POST,
+            uri
           ).withHeaders(Headers(authHeader, contentTypeHeader))
             .withEntity(requestBody.asJson)
           response <- httpClient.run(request).use { response =>

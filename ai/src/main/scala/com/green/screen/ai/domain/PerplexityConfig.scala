@@ -1,6 +1,5 @@
 package com.green.screen.ai.domain
 
-import cats.syntax.all.*
 import com.green.screen.common.config.RefinedUri
 import eu.timepit.refined.api.Refined
 import eu.timepit.refined.pureconfig.*
@@ -19,6 +18,7 @@ object PerplexityBaseUri {
 
   extension (uri: PerplexityBaseUri) {
     def value: RefinedUri = uri
+    def stringify: String = value.value
   }
 
   given (using configRead: ConfigReader[RefinedUri]): ConfigReader[PerplexityBaseUri] = configRead.from(_)

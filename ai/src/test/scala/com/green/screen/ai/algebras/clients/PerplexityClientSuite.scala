@@ -19,7 +19,7 @@ import org.typelevel.log4cats.noop.NoOpLogger
 class PerplexityClientSuite extends CatsEffectSuite with ScalaCheckEffectSuite {
 
   implicit val logger: SelfAwareStructuredLogger[IO] = NoOpLogger[IO]
-  
+
   def routes(mkResponse: IO[Response[IO]]): HttpApp[IO] = {
     HttpRoutes
       .of[IO] { case POST -> root / _ / "chat" / "completions" =>

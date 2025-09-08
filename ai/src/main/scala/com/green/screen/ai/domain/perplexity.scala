@@ -3,12 +3,12 @@ package com.green.screen.ai.domain
 import cats.Eq
 import cats.data.NonEmptyVector
 import cats.syntax.all.*
-import eu.timepit.refined.types.numeric.{ NonNegInt, PosInt }
+import eu.timepit.refined.types.numeric.{NonNegInt, PosInt}
 import eu.timepit.refined.types.string.NonEmptyString
 import io.circe.derivation.*
 import io.circe.derivation.Configuration.default
 import io.circe.refined.*
-import io.circe.{ Decoder, Encoder }
+import io.circe.{Decoder, Encoder}
 
 import scala.util.control.NoStackTrace
 
@@ -72,8 +72,10 @@ object perplexity {
     case User
   }
 
-  given eq: Eq[PerplexityRole] with {
-    override def eqv(x: PerplexityRole, y: PerplexityRole): Boolean = x == y
+  object PerplexityRole {
+    given eq: Eq[PerplexityRole] with {
+      override def eqv(x: PerplexityRole, y: PerplexityRole): Boolean = x == y
+    }
   }
 
   final case class PerplexityMessage(
