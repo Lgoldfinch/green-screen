@@ -45,7 +45,7 @@ object transactions {
     TransactionAmount.value
   )
 
-  final case class OpenAPITransaction(
+  final case class OpenBankingTransaction(
       uuid: TransactionUuid,
       companyUuid: CompanyUuid,
       userUuid: UserUuid,
@@ -53,14 +53,14 @@ object transactions {
       createdAt: CreatedAt
   )
 
-  object OpenAPITransaction {
-    given Show[OpenAPITransaction] = Show.fromToString
+  object OpenBankingTransaction {
+    given Show[OpenBankingTransaction] = Show.fromToString
   }
 
-  val openAPITransactionCodec: Codec[OpenAPITransaction] =
+  val OpenBankingTransactionCodec: Codec[OpenBankingTransaction] =
     (transactionUuidCodec, companyUuidCodec, userUuidCodec, transactionAmountCodec, createdAtCodec).tupled.imap(
-      OpenAPITransaction.apply
-    ) { case OpenAPITransaction(uuid, companyUuid, userUuid, amount, createdAt) =>
+      OpenBankingTransaction.apply
+    ) { case OpenBankingTransaction(uuid, companyUuid, userUuid, amount, createdAt) =>
       (uuid, companyUuid, userUuid, amount, createdAt)
     }
 

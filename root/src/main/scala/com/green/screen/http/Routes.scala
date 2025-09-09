@@ -5,7 +5,7 @@ import cats.effect.Concurrent
 import cats.syntax.all.*
 import com.green.screen.Programs
 import com.green.screen.ai.routes.*
-import com.green.screen.banking.domain.openAPI.BankPrefix
+import com.green.screen.banking.domain.openBanking.BankPrefix
 import com.green.screen.banking.routes.*
 import com.green.screen.common.auth.UserType
 import eu.timepit.refined.api.RefType
@@ -13,7 +13,7 @@ import org.http4s.AuthedRoutes
 import org.typelevel.log4cats.Logger
 
 object Routes:
-  def make[F[_]: Concurrent: Logger: ApplicativeThrow](programs: Programs[F]): F[AuthedRoutes[UserType, F]] = {
+  def make[F[_]: {Concurrent, Logger, ApplicativeThrow}](programs: Programs[F]): F[AuthedRoutes[UserType, F]] = {
     for {
       santanderPrefix <- RefType
         .applyRef[BankPrefix]("santander/")

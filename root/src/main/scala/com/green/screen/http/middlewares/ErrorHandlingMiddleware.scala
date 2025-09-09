@@ -7,7 +7,7 @@ import org.http4s.*
 import org.typelevel.log4cats.Logger
 
 object ErrorHandlingMiddleware {
-  def apply[F[_]: ApplicativeThrow: Logger](app: HttpApp[F]): HttpApp[F] = Kleisli { req =>
+  def apply[F[_]: {ApplicativeThrow, Logger}](app: HttpApp[F]): HttpApp[F] = Kleisli { req =>
     app(req)
       .recoverWith { case err @ InvalidMessageBodyFailure(details, cause) =>
         val reason   = cause.flatMap(err => Option(err.getMessage)).getOrElse("Unknown")

@@ -6,7 +6,7 @@ import com.green.screen.config.DBConfig
 import org.flywaydb.core.Flyway
 import org.typelevel.log4cats.Logger
 
-final class SqlMigrator[F[_]: Sync: Logger](dbConfig: DBConfig) {
+final class SqlMigrator[F[_]: {Sync, Logger}](dbConfig: DBConfig) {
   def run: F[Unit] = {
 
     val url = s"jdbc:postgresql://${dbConfig.host}:${dbConfig.port}/${dbConfig.name}"

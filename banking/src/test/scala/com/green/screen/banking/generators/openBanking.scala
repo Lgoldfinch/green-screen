@@ -1,7 +1,7 @@
 package com.green.screen.banking.generators
 
 import org.scalacheck.Gen
-import com.green.screen.banking.domain.openAPI.*
+import com.green.screen.banking.domain.openBanking.*
 import com.green.screen.common.generators.*
 import eu.timepit.refined.api.RefType
 

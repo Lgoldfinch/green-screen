@@ -1,6 +1,5 @@
 package com.green.screen
 
-import cats.data.Kleisli
 import cats.effect.*
 import com.comcast.ip4s.{ ipv4, port }
 import com.green.screen.Algebras
@@ -15,7 +14,8 @@ import org.typelevel.log4cats.slf4j.Slf4jLogger
 
 object Server extends IOApp:
   def run(args: List[String]): IO[ExitCode] = {
-    implicit val logger: SelfAwareStructuredLogger[IO] = Slf4jLogger.getLogger[IO]
+    given logger: SelfAwareStructuredLogger[IO] = Slf4jLogger.getLogger[IO]
+
     (for {
       appConfig <- Resource.eval(ConfigLoader.loadConfig[IO])
       resources <- AppResources.make[IO](appConfig.db)

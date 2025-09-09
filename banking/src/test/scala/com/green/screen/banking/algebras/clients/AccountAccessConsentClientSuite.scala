@@ -12,7 +12,7 @@ import org.scalacheck.effect.PropF.forAllF
 import org.typelevel.log4cats.SelfAwareStructuredLogger
 import org.typelevel.log4cats.noop.NoOpLogger
 import cats.effect.*
-import com.green.screen.banking.domain.openAPI.AccountAccessConsentsResponse
+import com.green.screen.banking.domain.openBanking.AccountAccessConsentsResponse
 import cats.syntax.all.*
 
 class AccountAccessConsentClientSuite extends CatsEffectSuite with ScalaCheckEffectSuite {

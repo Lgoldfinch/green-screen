@@ -3,7 +3,7 @@ package com.green.screen
 import cats.ApplicativeThrow
 import cats.syntax.all.*
 import com.green.screen.config.AppConfig
-import com.green.screen.ai.domain.PerplexityConfig
+import com.green.screen.ai.domain.config.PerplexityConfig
 import eu.timepit.refined.api.Refined
 import eu.timepit.refined.pureconfig.*
 import eu.timepit.refined.types.all.{ PosInt, UserPortNumber }

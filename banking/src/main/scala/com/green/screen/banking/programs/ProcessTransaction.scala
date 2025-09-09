@@ -5,14 +5,14 @@ import com.green.screen.banking.domain.transactions.*
 import com.green.screen.banking.domain.companies.CompanyName
 import cats.syntax.all.*
 import ProcessTransaction.CompanyNotFound
-import com.green.screen.banking.algebras.{ Companies, OpenAPITransactions }
+import com.green.screen.banking.algebras.{ Companies, OpenBankingTransactions }
 import com.green.screen.common.effects.GenUUID
 import com.green.screen.common.misc.CreatedAt
 
 import java.util.UUID
 import scala.util.control.NoStackTrace
 
-class ProcessTransaction[F[_]](companies: Companies[F], transactions: OpenAPITransactions[F])(using
+class ProcessTransaction[F[_]](companies: Companies[F], transactions: OpenBankingTransactions[F])(using
     MonadThrow[F],
     GenUUID[F]
 ):
@@ -24,7 +24,7 @@ class ProcessTransaction[F[_]](companies: Companies[F], transactions: OpenAPITra
       companyUuidOpt  <- companies.getCompanyUuidByName(companyName)
       companyUuid     <- companyUuidOpt.liftTo[F](CompanyNotFound(companyName))
       transactionUuid <- GenUUID[F].make.map(TransactionUuid.apply)
-      transaction = OpenAPITransaction(
+      transaction = OpenBankingTransaction(
         transactionUuid,
         companyUuid,
         request.userUuid,

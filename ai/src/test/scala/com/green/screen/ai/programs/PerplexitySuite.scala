@@ -3,11 +3,11 @@ package com.green.screen.ai.programs
 import cats.Id
 import cats.data.NonEmptyVector
 import com.green.screen.ai.algebras.clients.PerplexityClient
-import com.green.screen.ai.domain.perplexity.{PerplexityMessage, PerplexityResponse}
+import com.green.screen.ai.domain.perplexity.{ PerplexityMessage, PerplexityResponse }
 import com.green.screen.ai.generators.common.aiAskRequestGen
 import com.green.screen.ai.generators.perplexity.perplexityResponseGen
 import com.green.screen.common.GivenInstances.given
-import munit.{FunSuite, ScalaCheckSuite}
+import munit.{ FunSuite, ScalaCheckSuite }
 import org.scalacheck.Prop.forAll
 import org.typelevel.log4cats.Logger
 import org.typelevel.log4cats.noop.NoOpLogger

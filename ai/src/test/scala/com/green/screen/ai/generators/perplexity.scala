@@ -1,6 +1,7 @@
 package com.green.screen.ai.generators
 
 import com.green.screen.ai.domain.*
+import com.green.screen.ai.domain.config.*
 import com.green.screen.common.config.ApiKey
 import com.green.screen.common.generators.*
 import com.green.screen.ai.domain.perplexity.*

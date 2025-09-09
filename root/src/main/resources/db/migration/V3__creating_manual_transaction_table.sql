@@ -21,4 +21,4 @@ ALTER TABLE IF EXISTS transactions
     ADD COLUMN IF NOT EXISTS created_at TIMESTAMP NOT NULL DEFAULT NOW();
 
 ALTER TABLE IF EXISTS transactions
-    RENAME TO open_api_transactions;
+    RENAME TO open_banking_transactions;

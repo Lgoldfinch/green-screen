@@ -1,7 +1,7 @@
 package com.green.screen.banking.algebras
 
 import com.green.screen.banking.generators.companies.companyGen
-import com.green.screen.banking.generators.transactions.openAPITransactionGen
+import com.green.screen.banking.generators.transactions.OpenBankingTransactionGen
 import com.green.screen.banking.generators.users.*
 import cats.effect.IO
 
@@ -25,21 +25,21 @@ object UsersSuite extends BankingPostgresSuite:
   }
 
   test("Should be able to get the average emission scores for all of a users transactions") { postgres =>
-    val companiesAlgebra: Companies[IO]                     = Companies.make[IO](postgres)
-    val usersAlgebra: Users[IO]                             = Users.make[IO](postgres)
-    val openAPITransactionsAlgebra: OpenAPITransactions[IO] = OpenAPITransactions.make[IO](postgres)
+    val companiesAlgebra: Companies[IO]                  = Companies.make[IO](postgres)
+    val usersAlgebra: Users[IO]                          = Users.make[IO](postgres)
+    val transactionsAlgebra: OpenBankingTransactions[IO] = OpenBankingTransactions.make[IO](postgres)
 
     val gen = for {
       user         <- userGen
       companies    <- nelGen(companyGen)
-      transactions <- sequenceListGen(companies.toList)(company => openAPITransactionGen(company.uuid, user.uuid))
+      transactions <- sequenceListGen(companies.toList)(company => OpenBankingTransactionGen(company.uuid, user.uuid))
     } yield (companies, transactions, user)
 
     forall(gen) { case (companies, transactions, user) =>
       for {
         _     <- companies.traverse(companiesAlgebra.createCompany)
         _     <- usersAlgebra.createUser(user)
-        _     <- transactions.traverse(openAPITransactionsAlgebra.createTransaction)
+        _     <- transactions.traverse(transactionsAlgebra.createTransaction)
         score <- usersAlgebra.getScore(user.uuid)
         expectedScore = BigDecimal
           .decimal(companies.map(company => company.co2Emissions.value).toList.sum / companies.length)

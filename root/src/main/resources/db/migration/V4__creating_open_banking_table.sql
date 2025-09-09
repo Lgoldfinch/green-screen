@@ -1,4 +1,4 @@
-CREATE TABLE IF NOT EXISTS user_open_api_data
+CREATE TABLE IF NOT EXISTS user_open_banking_data
 (
    uuid UUID PRIMARY KEY,
    consent_id TEXT NOT NULL,

@@ -12,7 +12,7 @@ trait BankingPostgresSuite extends PostgresSuite {
   given SelfAwareStructuredLogger[IO] = NoOpLogger[IO]
 
   override val flushTables: List[Command[Void]] =
-    List("companies", "transactions", "users").map { table =>
+    List("companies", "open_banking_transactions", "users").map { table =>
       sql"DELETE FROM #$table".command
     }
 

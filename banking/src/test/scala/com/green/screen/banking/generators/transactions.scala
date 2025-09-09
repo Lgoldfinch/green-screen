@@ -13,17 +13,17 @@ object transactions {
 
   val transactionAmountGen: Gen[TransactionAmount] = Gen.double.map(TransactionAmount.apply)
 
-  val openAPITransactionGen: Gen[OpenAPITransaction] = for {
+  val OpenBankingTransactionGen: Gen[OpenBankingTransaction] = for {
     transactionUuid   <- transactionUuidGen
     companyUuid       <- companyUuidGen
     userUuid          <- userUuidGen
     transactionAmount <- transactionAmountGen
     createdAt         <- createdAtGen
-  } yield OpenAPITransaction(transactionUuid, companyUuid, userUuid, transactionAmount, createdAt)
+  } yield OpenBankingTransaction(transactionUuid, companyUuid, userUuid, transactionAmount, createdAt)
 
-  def openAPITransactionGen(companyUuid: CompanyUuid, userUuid: UserUuid): Gen[OpenAPITransaction] = for {
+  def OpenBankingTransactionGen(companyUuid: CompanyUuid, userUuid: UserUuid): Gen[OpenBankingTransaction] = for {
     transactionUuid   <- transactionUuidGen
     transactionAmount <- transactionAmountGen
     createdAt         <- createdAtGen
-  } yield OpenAPITransaction(transactionUuid, companyUuid, userUuid, transactionAmount, createdAt)
+  } yield OpenBankingTransaction(transactionUuid, companyUuid, userUuid, transactionAmount, createdAt)
 }

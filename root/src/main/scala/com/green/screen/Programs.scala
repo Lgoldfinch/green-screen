@@ -23,7 +23,7 @@ object Programs:
         ProcessTransaction[F](algebras.companies, algebras.transactions)
 
       override val createAccountAccessConsent: CreateAccountAccessConsent[F] =
-        CreateAccountAccessConsent[F](clients.accountAccessConsentClient, algebras.userOpenApiData)
+        CreateAccountAccessConsent[F](clients.accountAccessConsentClient, algebras.userOpenBankingData)
 
       override val perplexity: Perplexity[F] =
         Perplexity[F](clients.perplexityClient)

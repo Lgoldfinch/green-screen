@@ -18,26 +18,14 @@ import io.circe.refined.*
 import java.time.Instant
 import java.util.UUID
 
-object openAPI {
+object openBanking {
 
   given configuration: Configuration = default.withPascalCaseMemberNames
 
   enum Permission:
-    case ReadAccountsDetail
-    case ReadBalances
-    case ReadBeneficiariesDetail
-    case ReadDirectDebits
-    case ReadProducts
-    case ReadStandingOrdersDetail
-    case ReadTransactionsCredits
-    case ReadTransactionsDebits
-    case ReadTransactionsDetail
-    case ReadOffers
-    case ReadPAN
-    case ReadParty
-    case ReadPartyPSU
-    case ReadScheduledPaymentsDetail
-    case ReadStatementsDetail
+    case ReadAccountsDetail, ReadBalances, ReadBeneficiariesDetail, ReadDirectDebits, ReadProducts,
+      ReadStandingOrdersDetail, ReadTransactionsCredits, ReadTransactionsDebits, ReadTransactionsDetail, ReadOffers,
+      ReadPAN, ReadParty, ReadPartyPSU, ReadScheduledPaymentsDetail, ReadStatementsDetail
 
   object Permission {
     given permissionCodec: Codec[Permission] = ConfiguredEnumCodec.derived
@@ -107,28 +95,29 @@ object openAPI {
   final case class AccountAccessConsentsResponse(consentId: ConsentId, status: AccountAccessConsentsStatus)
       derives ConfiguredCodec
 
-  opaque type UserOpenApiDataUuid = UUID
+  opaque type UserOpenBankingDataUuid = UUID
 
-  object UserOpenApiDataUuid {
-    def apply(value: UUID): UserOpenApiDataUuid = value
+  object UserOpenBankingDataUuid {
+    def apply(value: UUID): UserOpenBankingDataUuid = value
 
-    extension (id: UserOpenApiDataUuid) def value: UUID = id
+    extension (id: UserOpenBankingDataUuid) def value: UUID = id
   }
 
-  val userOpenApiDataUuidCodec: skunk.Codec[UserOpenApiDataUuid] =
-    uuid.imap(UserOpenApiDataUuid.apply)(UserOpenApiDataUuid.value)
+  val userOpenBankingDataUuidCodec: skunk.Codec[UserOpenBankingDataUuid] =
+    uuid.imap(UserOpenBankingDataUuid.apply)(UserOpenBankingDataUuid.value)
 
-  final case class UserOpenApiDataDB(
-      uuid: UserOpenApiDataUuid,
+  final case class UserOpenBankingDataDB(
+      uuid: UserOpenBankingDataUuid,
       consentId: ConsentId,
       userUuid: UserUuid,
       createdAt: CreatedAt
   )
 
-  val userOpenApiDataDBCodec: skunk.Codec[UserOpenApiDataDB] =
-    (userOpenApiDataUuidCodec, consentIdCodec, userUuidCodec, createdAtCodec).tupled.imap(UserOpenApiDataDB.apply) {
-      case UserOpenApiDataDB(uuid, consentId, userUuid, createdAt) =>
-        (uuid, consentId, userUuid, createdAt)
+  val userOpenBankingDataDBCodec: skunk.Codec[UserOpenBankingDataDB] =
+    (userOpenBankingDataUuidCodec, consentIdCodec, userUuidCodec, createdAtCodec).tupled.imap(
+      UserOpenBankingDataDB.apply
+    ) { case UserOpenBankingDataDB(uuid, consentId, userUuid, createdAt) =>
+      (uuid, consentId, userUuid, createdAt)
     }
 
 }

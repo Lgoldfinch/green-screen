@@ -56,13 +56,14 @@ object UsersSQL:
          WHERE uuid = $userUuidCodec
          """.query(userCodec)
 
+//  Revisit this
   val getUserScoreQuery: Query[UserUuid, UserScore] =
     sql"""
          SELECT COALESCE(ROUND(AVG(c.co2_emissions::numeric), 2)::float8, 0) FROM users u
-           JOIN transactions t
-              ON u.uuid = t.user_uuid
+           JOIN open_banking_transactions obt
+              ON u.uuid = obt.user_uuid
            JOIN companies c
-              ON t.company_uuid = c.uuid
+              ON obt.company_uuid = c.uuid
          WHERE u.uuid = $userUuidCodec
 
          """.query(userScoreCodec)
