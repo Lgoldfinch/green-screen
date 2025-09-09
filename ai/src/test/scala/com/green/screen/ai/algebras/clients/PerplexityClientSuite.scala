@@ -71,29 +71,6 @@ class PerplexityClientSuite extends CatsEffectSuite with ScalaCheckEffectSuite {
       }
     }
   }
-//
-//  test("Should handle ") {
-//    forAllF(
-//      perplexityConfigGen,
-//      Gen.listOf(perplexityMessageGen),
-//      perplexityMessageGen.suchThat(_.role === PerplexityRole.User),
-//      perplexityErrorResponseGen
-//    ) { case (config, perplexityMessages, perplexityMessage, perplexityErrorResponse) =>
-//      val client = Client.fromHttpApp(routes( BadRequest(perplexityErrorResponse)))
-//
-//      val perplexityClient: PerplexityClient[IO] = PerplexityClient.make[IO](client, config)
-//
-//      val messages = perplexityMessages.appended(perplexityMessage)
-//
-//      perplexityClient.chat(messages).attempt.map {
-//        case Left(err: PerplexityErrorResponse) =>
-//          assertEquals(err.getMessage, s"Request to Perplexity failed, got: ${err.error}")
-//        case Left(exception) =>
-//          fail(s"Should have failed with PerplexityRoleException. Failed with ${exception.getMessage}")
-//        case Right(value) => fail(s"This should have failed. Succeeded with ${value.toString}")
-//      }
-//    }
-//  }
 
   test("Should return response body successfully otherwise") {
     forAllF(
@@ -107,11 +84,10 @@ class PerplexityClientSuite extends CatsEffectSuite with ScalaCheckEffectSuite {
           Ok(perplexityResponse)
         }
         .orNotFound
-      /// .pure(Ok(perplexityResponse)).orNotFound
 
       val client = Client.fromHttpApp(routes)
 
-      val perplexityClient: PerplexityClient[IO] = PerplexityClient.make[IO](client, config)
+      val perplexityClient = PerplexityClient.make[IO](client, config)
 
       val messages = NonEmptyVector.fromVectorUnsafe(perplexityMessages.appended(perplexityMessage).toVector)
 

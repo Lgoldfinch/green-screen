@@ -41,11 +41,12 @@ object perplexity {
     content <- nonEmptyStringGen(identity)
   } yield PerplexityMessage(role, content)
 
-  val perplexityChoiceGen: Gen[PerplexityChoice] = for {
-    index             <- nonNegIntGen
-    perplexityMessage <- perplexityMessageGen
-    finishReason      <- Gen.option(finishReasonGen)
-  } yield PerplexityChoice(index, perplexityMessage, finishReason)
+  val perplexityChoiceGen: Gen[PerplexityChoice] =
+    for {
+      index             <- nonNegIntGen
+      perplexityMessage <- perplexityMessageGen
+      finishReason      <- Gen.option(finishReasonGen)
+    } yield PerplexityChoice(index, perplexityMessage, finishReason)
 
   val perplexityResponseGen: Gen[PerplexityResponse] = for {
     completionId <- completionIdGen

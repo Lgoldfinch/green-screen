@@ -1,12 +1,14 @@
 package com.green.screen.common
 
-import cats.{ Id, Monad }
 import cats.effect.kernel.{ CancelScope, MonadCancelThrow, Poll }
+import cats.{ Id, Monad, MonadThrow }
+import com.green.screen.common.effects.GenUUID
 
-object CatsInstances {
+import java.util.UUID
 
-  given mct(using m: Monad[Id]): MonadCancelThrow[Id] = {
-    new MonadCancelThrow[Id] {
+object GivenInstances {
+  given (using m: Monad[Id]): MonadThrow[Id] = {
+    new MonadThrow[Id] {
       override def pure[A](a: A): Id[A] = m.pure(a)
 
       override def flatMap[A, B](fa: Id[A])(f: A => Id[B]): Id[B] =
@@ -22,20 +24,11 @@ object CatsInstances {
       override def tailRecM[A, B](a: A)(f: A => Id[Either[A, B]]): Id[B] = {
         ???
       }
-
-      override def uncancelable[A](body: Poll[Id] => Id[A]): Id[A] =
-        ???
-
-      override def forceR[A, B](fa: Id[A])(fb: Id[B]): Id[B] =
-        ???
-
-      override def onCancel[A](fa: Id[A], fin: Id[Unit]): Id[A] =
-        // No cancellation logic in this toy effect, so just run `fa`
-        ???
-
-      override def rootCancelScope: CancelScope = ???
-
-      override def canceled: Id[Unit] = ???
     }
   }
+
+  given GenUUID[Id] with
+    override def make: Id[UUID] = UUID.randomUUID()
+
+    override def read(str: String): Id[UUID] = UUID.fromString(str)
 }

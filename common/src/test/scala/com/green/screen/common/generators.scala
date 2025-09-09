@@ -6,6 +6,7 @@ import com.green.screen.common.misc.CreatedAt
 import eu.timepit.refined.api.Refined
 import eu.timepit.refined.types.all.*
 import org.scalacheck.Gen
+import org.scalacheck.Gen.Choose
 
 import java.time.Instant
 
@@ -23,20 +24,19 @@ object generators:
 
   def nonEmptyStringGen[A](f: NonEmptyString => A): Gen[A] = nonEmptyStringGen.map(f)
 
-  val nonNegIntGen: Gen[NonNegInt] = Gen.double.map(_.toInt).map(NonNegInt.unsafeFrom)
+  def numericalNonNeg[T](using num: Numeric[T], c: Choose[T]): Gen[T] =
+    Gen.oneOf[T](Gen.const[T](num.zero), Gen.posNum[T])
 
-  val posIntGen: Gen[PosInt] = Gen.long
-    .map(_.abs.toInt)
-    .map(
-      PosInt.unsafeFrom
-    )
+  val nonNegIntGen: Gen[NonNegInt] = numericalNonNeg[Int].map(NonNegInt.unsafeFrom)
 
-  val nonNegDoubleGen: Gen[NonNegDouble] = Gen.double.map(NonNegDouble.unsafeFrom)
+  val posIntGen: Gen[PosInt] = Gen.posNum.map(PosInt.unsafeFrom)
 
-  val nonNegLongGen: Gen[NonNegLong] = Gen.long.map(_.abs).map(NonNegLong.unsafeFrom)
+  val nonNegDoubleGen: Gen[NonNegDouble] = numericalNonNeg[Double].map(NonNegDouble.unsafeFrom)
+
+  val nonNegLongGen: Gen[NonNegLong] = numericalNonNeg[Long].map(NonNegLong.unsafeFrom)
 
   def nonNegDoubleGen[A](f: NonNegDouble => A): Gen[A] =
-    Gen.double.map(double => NonNegDouble.unsafeFrom(double)).map(f)
+    nonNegDoubleGen.map(f)
 
   def sequenceListGen[A, B](list: List[A])(f: A => Gen[B]): Gen[List[B]] = Gen.sequence[List[B], B](
     list.map(item => f(item))
