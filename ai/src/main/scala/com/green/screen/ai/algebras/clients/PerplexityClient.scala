@@ -41,7 +41,7 @@ object PerplexityClient {
             .withEntity(requestBody.asJson)
           response <- httpClient.run(request).use { response =>
             response.status match {
-              case Status.Ok => response.as[PerplexityResponse]
+              case Status.Ok         => response.as[PerplexityResponse]
               case Status.BadRequest =>
                 response
                   .as[PerplexityErrorResponse]

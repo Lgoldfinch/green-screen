@@ -61,7 +61,7 @@ object perplexity {
       else PerplexityRequest(model, messages).asRight[PerplexityRoleException]
   }
 
-  sealed trait PerplexityException extends NoStackTrace
+  sealed trait PerplexityException                                   extends NoStackTrace
   case class PerplexityRoleException(perplexityRole: PerplexityRole) extends PerplexityException {
     override def getMessage: String = s"Last message must have role `user` or `tool`. Got $perplexityRole instead."
   }

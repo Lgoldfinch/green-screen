@@ -4,16 +4,17 @@ ThisBuild / organization := "com.green.screen"
 ThisBuild / scalaVersion := Version.ScalaVersion
 ThisBuild / version      := "1.0.0"
 
-lazy val commonSettings = Seq(
-  fork := true,
-  scalafmtOnCompile := true
+lazy val commonDependencies = libraryDependencies ++= List.concat(
+  Http4s,
+  Logback,
+  Logging
 )
 
 lazy val common = (project in file("common"))
   .settings(
     name := "common",
-    scalacOptions ++= Seq("-Xkind-projector"),
-    commonSettings,
+    fork := true,
+    scalafmtOnCompile := true,
     libraryDependencies ++= List.concat(
       CatsEffect,
       Circe,
@@ -30,46 +31,38 @@ lazy val ai = (project in file("ai"))
   .dependsOn(common, common % "test->test")
   .settings(
     name := "ai",
-    commonSettings,
-    libraryDependencies ++= List.concat(
-      Http4s,
-      Logback,
-      Logging
-    )
+    commonDependencies
   )
 
 lazy val banking = (project in file("banking"))
   .dependsOn(common, common % "test->test")
   .settings(
     name := "banking",
-    commonSettings,
-    libraryDependencies ++= List.concat(
-      Http4s,
-      Logback,
-      Logging
-    )
+    commonDependencies
   )
 
-// Root combines the different modules and packages the application as a Docker container
 lazy val root = (project in file("root"))
-  .enablePlugins(DockerPlugin, JavaServerAppPackaging)
   .dependsOn(ai, banking)
   .settings(
     name := "root",
-    commonSettings,
     libraryDependencies ++= List.concat(
       FlywayDb
     ),
     Compile / run / mainClass := Some("com.green.screen.Server")
   )
-  .settings(
-    Docker / packageName := "green-screen",
-    Docker / version := version.value,
-    dockerBaseImage := "openjdk:21",
-    dockerExposedPorts ++= Seq(8080)
-)
 
 Global / onChangedBuildSource := ReloadOnSourceChanges
+
+scalacOptions ++= Seq(
+  "-deprecation",
+  "-feature",
+  "-language:noAutoTupling",
+  "-language:strictEquality",
+  "-Werror",
+  "-Wnonunit-statements",
+  "-Wunused:all",
+  "-Ysafe-init"
+)
 
 addCommandAlias("run", "root / run")
 addCommandAlias("compileAi", "ai / compile")

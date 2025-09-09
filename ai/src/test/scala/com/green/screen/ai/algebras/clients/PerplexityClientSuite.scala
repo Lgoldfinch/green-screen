@@ -42,7 +42,7 @@ class PerplexityClientSuite extends CatsEffectSuite with ScalaCheckEffectSuite {
 
       perplexityClient.chat(messages).attempt.map {
         case Left(_: PerplexityRoleException) => assert(true)
-        case Left(exception) =>
+        case Left(exception)                  =>
           fail(s"Should have failed with PerplexityRoleException. Failed with ${exception.getMessage}")
         case Right(value) => fail(s"This should have failed. Succeeded with ${value.toString}")
       }
