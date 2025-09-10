@@ -12,7 +12,7 @@ Green Screen is a modular Scala application designed to bridge OpenBanking data 
 ## Project Structure
 
 - **ai/**: Handles AI agent integrations (e.g., Perplexity integration).
-- **banking/**: Manages OpenBanking data ingestion, user transactions, and related business logic.
+- **banking/**: Manages OpenBanking data, with the aim to analyse user transactions and related business logic.
 - **common/**: Shared utilities, effects, and configuration used across modules.
 - **root/**: Contains the main application entry point and server setup. Aggregates routes from both domains.
 

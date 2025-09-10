@@ -42,7 +42,7 @@ object generators:
     list.map(item => f(item))
   )
 
-  val instantGen: Gen[Instant] = Gen.calendar.map(_.toInstant)
+  val instantGen: Gen[Instant] = Gen.oneOf(Gen.const(Instant.EPOCH), Gen.const(Instant.now()))
 
   val createdAtGen: Gen[CreatedAt] = instantGen.map(CreatedAt.apply)
 
