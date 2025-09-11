@@ -28,10 +28,10 @@ object CompaniesSuite extends BankingPostgresSuite:
       for {
         _                <- companiesAlgebra.createCompany(company1)
         _                <- companiesAlgebra.createCompany(company2)
-        retrievedCompany <- companiesAlgebra.getCompanyUuidByName(company1.name)
+        retrievedCompanyUuid <- companiesAlgebra.getCompanyUuidByName(company1.name)
       } yield {
         expect.same(
-          retrievedCompany,
+          retrievedCompanyUuid,
           Some(company1.uuid)
         )
       }

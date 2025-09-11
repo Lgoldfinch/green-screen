@@ -1,7 +1,6 @@
 package com.green.screen.banking.algebras
 
 import cats.data.NonEmptyList
-import cats.effect.*
 import cats.effect.kernel.{ Concurrent, MonadCancelThrow, Resource }
 import cats.syntax.all.*
 import CompaniesSQL.*
@@ -45,9 +44,9 @@ object Companies:
         )
       )
 
-      override def getCompanyUuidByName(companyName: CompanyName): F[Option[(CompanyUuid)]] = resource.use(
+      override def getCompanyUuidByName(companyName: CompanyName): F[Option[CompanyUuid]] = resource.use(
         _.prepare(queryGetUuidByName).flatMap(
-          _.option((CompanyName(companyName.value), CompanyName(companyName.value))).map(_.map(_._1))
+          _.option((CompanyName(companyName.value), CompanyName(companyName.value)))
         )
       )
 
@@ -70,12 +69,12 @@ object CompaniesSQL:
          WHERE uuid = $companyUuidCodec
          """.query(companyCodec)
 
-  val queryGetUuidByName: Query[(CompanyName, CompanyName), (CompanyUuid, Float)] =
+  val queryGetUuidByName: Query[(CompanyName, CompanyName), CompanyUuid] =
     sql"""
-         SELECT uuid, ts_rank(name_tsv, plainto_tsquery($companyNameCodec)) AS rank FROM companies
+         SELECT uuid FROM companies
          WHERE name_tsv @@ plainto_tsquery($companyNameCodec)
-         ORDER BY rank DESC
+         ORDER BY ts_rank(name_tsv, plainto_tsquery($companyNameCodec)) DESC
          LIMIT 1
-         """.query(companyUuidCodec ~ float4)
+         """.query(companyUuidCodec)
 
 end CompaniesSQL
