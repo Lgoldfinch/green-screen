@@ -1,11 +1,11 @@
 package com.green.screen
 
 import cats.effect.Resource
-import cats.effect.kernel.{ Async, Temporal }
+import cats.effect.kernel.{Async, Temporal}
 import cats.effect.std.Console
 import fs2.io.net.Network
-import org.typelevel.log4cats.{ Logger, LoggerFactory }
-import skunk.Session
+import org.typelevel.log4cats.{Logger, LoggerFactory}
+import skunk.{Session, SessionPool}
 import skunk.codec.all.text
 import skunk.implicits.*
 import cats.syntax.all.*
@@ -33,7 +33,7 @@ object AppResources {
       }
     }
 
-    def mkPostgresResource: Resource[F, Resource[F, Session[F]]] = {
+    def mkPostgresResource: SessionPool[F] = {
       Session
         .pooled[F](
           host = dbConfig.host.value.value,
@@ -49,6 +49,6 @@ object AppResources {
     def mkEmberClient: Resource[F, Client[F]] =
       EmberClientBuilder.default[F].build
 
-    (mkPostgresResource, mkEmberClient).mapN(new AppResources[F](_, _) {})
+    (mkPostgresResource, mkEmberClient).parMapN { new AppResources[F](_, _) {} }
   }
 }

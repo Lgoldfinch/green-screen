@@ -19,11 +19,11 @@ trait Companies[F[_]] {
 }
 
 object Companies:
-  def make[F[_]](resource: Resource[F, Session[F]])(using MonadCancelThrow[F], Concurrent[F]): Companies[F] =
+  def make[F[_]](postgres: Resource[F, Session[F]])(using MonadCancelThrow[F], Concurrent[F]): Companies[F] =
     new Companies[F]:
       override def createCompanies(cs: NonEmptyList[Company]): F[Unit] = {
         val companies = cs.toList
-        resource.use(
+        postgres.use(
           _.prepare(queryInsertCompanies(companies)).flatMap(
             _.execute(companies).void
           )
@@ -31,20 +31,20 @@ object Companies:
       }
 
       override def createCompany(cs: Company): F[Unit] = {
-        resource.use(
+        postgres.use(
           _.prepare(companyCommand).flatMap(
             _.execute((cs.uuid, cs.name, cs.co2Emissions, cs.name.value.value)).void
           )
         )
       }
 
-      override def getCompany(companyUuid: CompanyUuid): F[Option[Company]] = resource.use(
+      override def getCompany(companyUuid: CompanyUuid): F[Option[Company]] = postgres.use(
         _.prepare(queryGetCompany).flatMap(
           _.option(companyUuid)
         )
       )
 
-      override def getCompanyUuidByName(companyName: CompanyName): F[Option[CompanyUuid]] = resource.use(
+      override def getCompanyUuidByName(companyName: CompanyName): F[Option[CompanyUuid]] = postgres.use(
         _.prepare(queryGetUuidByName).flatMap(
           _.option((CompanyName(companyName.value), CompanyName(companyName.value)))
         )

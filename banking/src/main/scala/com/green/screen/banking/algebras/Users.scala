@@ -17,8 +17,8 @@ trait Users[F[_]]:
 end Users
 
 object Users:
-  def make[F[_]](resource: Resource[F, Session[F]])(using MonadCancelThrow[F], Concurrent[F]): Users[F] = new Users[F] {
-    override def createUser(user: User): F[Unit] = resource.use(
+  def make[F[_]](postgres: Resource[F, Session[F]])(using MonadCancelThrow[F], Concurrent[F]): Users[F] = new Users[F] {
+    override def createUser(user: User): F[Unit] = postgres.use(
       _.prepare(insertUserCommand)
         .flatMap(
           _.execute(user)
@@ -26,14 +26,14 @@ object Users:
         .void
     )
 
-    override def getUser(userUuid: UserUuid): F[Option[User]] = resource.use(
+    override def getUser(userUuid: UserUuid): F[Option[User]] = postgres.use(
       _.prepare(getUserQuery).flatMap(
         _.option(userUuid)
       )
     )
 
     override def getScore(userUuid: UserUuid): F[UserScore] =
-      resource
+      postgres
         .use(
           _.prepare(getUserScoreQuery)
             .flatMap(

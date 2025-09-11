@@ -13,9 +13,9 @@ trait UserOpenBankingData[F[_]]:
 end UserOpenBankingData
 
 object UserOpenBankingData:
-  def make[F[_]](resource: Resource[F, Session[F]])(using MonadCancelThrow[F], Concurrent[F]): UserOpenBankingData[F] =
+  def make[F[_]](postgres: Resource[F, Session[F]])(using MonadCancelThrow[F], Concurrent[F]): UserOpenBankingData[F] =
     new UserOpenBankingData[F] {
-      override def create(userOpenBankingDataDB: UserOpenBankingDataDB): F[Unit] = resource.use(
+      override def create(userOpenBankingDataDB: UserOpenBankingDataDB): F[Unit] = postgres.use(
         _.prepare(insertUserOpenBankingDataCommand)
           .flatMap(
             _.execute(userOpenBankingDataDB)
