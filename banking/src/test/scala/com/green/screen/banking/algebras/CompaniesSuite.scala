@@ -6,6 +6,8 @@ import com.green.screen.banking.generators.companies.*
 import weaver.*
 import weaver.scalacheck.*
 
+import java.time.Instant
+
 object CompaniesSuite extends BankingPostgresSuite:
   test("Should be able to insert and retrieve a company") { postgres =>
     val companiesAlgebra: Companies[IO] = Companies.make[IO](postgres)

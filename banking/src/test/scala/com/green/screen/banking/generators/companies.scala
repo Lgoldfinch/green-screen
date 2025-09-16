@@ -13,6 +13,11 @@ object companies:
   val companyGen: Gen[Company] = for {
     uuid        <- companyUuidGen
     name        <- companyNameGen
-    co2Emission <- co2EmissionGen
+    co2Emission <- Gen.option(co2EmissionGen)
   } yield Company(uuid, name, co2Emission)
+  
+  val createCompanyRequestGen: Gen[CreateCompanyRequest] = for {
+    name        <- companyNameGen
+    co2Emission <- Gen.option(co2EmissionGen)
+  } yield CreateCompanyRequest(name, co2Emission)
 end companies

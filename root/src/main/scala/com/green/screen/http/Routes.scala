@@ -19,9 +19,10 @@ object Routes:
         .applyRef[BankPrefix]("santander/")
         .leftMap(RuntimeException(_))
         .liftTo[F]
+      companies         = CompanyRoutes.routes(programs.createCompany)
       userRoutes        = UserRoutes.routes(programs.getUserScores)
       transactionRoutes = TransactionRoutes.routes[F](programs.processTransaction)
       perplexity        = PerplexityRoutes.make[F](programs.perplexity)
-    } yield List(transactionRoutes, userRoutes, perplexity).reduce(_ <+> _)
+    } yield List(companies, transactionRoutes, userRoutes, perplexity).reduce(_ <+> _)
   }
 end Routes

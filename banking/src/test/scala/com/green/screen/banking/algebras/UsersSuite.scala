@@ -41,8 +41,9 @@ object UsersSuite extends BankingPostgresSuite:
         _     <- usersAlgebra.createUser(user)
         _     <- transactions.traverse(transactionsAlgebra.createTransaction)
         score <- usersAlgebra.getScore(user.uuid)
+        // Fix me
         expectedScore = BigDecimal
-          .decimal(companies.map(company => company.co2Emissions.value).toList.sum / companies.length)
+          .decimal(companies.map(company => company.co2Emissions.get.value).toList.sum / companies.length)
           .setScale(2, RoundingMode.HALF_UP)
       } yield expect.same(
         BigDecimal.decimal(score.value.value),

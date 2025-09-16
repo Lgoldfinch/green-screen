@@ -44,6 +44,7 @@ object Companies:
         )
       )
 
+      // We use ts_vectors to find like company names. We could use other values such as Companies House IDs.
       override def getCompanyUuidByName(companyName: CompanyName): F[Option[CompanyUuid]] = postgres.use(
         _.prepare(queryGetUuidByName).flatMap(
           _.option((CompanyName(companyName.value), CompanyName(companyName.value)))
@@ -58,9 +59,9 @@ object CompaniesSQL:
     sql"""INSERT INTO companies VALUES $enc""".command
   }
 
-  val companyCommand: Command[(CompanyUuid, CompanyName, CompanyCo2EmissionsMetricTonnes, String)] =
+  val companyCommand: Command[(CompanyUuid, CompanyName, Option[CompanyCo2EmissionsMetricTonnes], String)] =
     sql"""
-         INSERT INTO companies VALUES ($companyUuidCodec, $companyNameCodec, $co2EmissionsCodec, to_tsvector($text))
+         INSERT INTO companies VALUES ($companyUuidCodec, $companyNameCodec, ${co2EmissionsCodec.opt}, to_tsvector($text))
        """.command
 
   val queryGetCompany: Query[CompanyUuid, Company] =
