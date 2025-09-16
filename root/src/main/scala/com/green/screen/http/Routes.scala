@@ -19,7 +19,7 @@ object Routes:
         .applyRef[BankPrefix]("santander/")
         .leftMap(RuntimeException(_))
         .liftTo[F]
-      userRoutes        = UserRoutes.routes(programs.getUserScores, programs.createAccountAccessConsent)
+      userRoutes        = UserRoutes.routes(programs.getUserScores)
       transactionRoutes = TransactionRoutes.routes[F](programs.processTransaction)
       perplexity        = PerplexityRoutes.make[F](programs.perplexity)
     } yield List(transactionRoutes, userRoutes, perplexity).reduce(_ <+> _)
