@@ -20,7 +20,7 @@ object Routes:
         .leftMap(RuntimeException(_))
         .liftTo[F]
       companies         = CompanyRoutes.routes(programs.createCompany)
-      userRoutes        = UserRoutes.routes(programs.getUserScores)
+      userRoutes        = UserRoutes.routes(programs.createUser, programs.getUserScores)
       transactionRoutes = TransactionRoutes.routes[F](programs.processTransaction)
       perplexity        = PerplexityRoutes.make[F](programs.perplexity)
     } yield List(companies, transactionRoutes, userRoutes, perplexity).reduce(_ <+> _)

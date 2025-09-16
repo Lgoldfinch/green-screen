@@ -9,6 +9,7 @@ import org.typelevel.log4cats.Logger
 
 trait Programs[F[_]]:
   val createCompany: CreateCompany[F]
+  val createUser: CreateUser[F]
   val getUserScores: GetUserScores[F]
   val processTransaction: ProcessTransaction[F]
   val createAccountAccessConsent: CreateAccountAccessConsent[F]
@@ -19,6 +20,8 @@ object Programs:
   def make[F[_]: {MonadThrow, Logger, GenUUID}](algebras: Algebras[F], clients: Clients[F]): Programs[F] =
     new Programs[F] {
       override val createCompany: CreateCompany[F] = CreateCompany[F](algebras.companies)
+      
+      override val createUser: CreateUser[F] = CreateUser[F](algebras.users)
       
       override val getUserScores: GetUserScores[F] = GetUserScores[F](algebras.users)
 
