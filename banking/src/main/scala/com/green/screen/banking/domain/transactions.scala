@@ -78,7 +78,6 @@ object transactions {
   final case class CreateTransactionRequest(
       name: TransactionEntity,
       amount: TransactionAmount,
-      userUuid: UserUuid,
-      createdAt: CreatedAt
+      userUuid: UserUuid
   ) derives ConfiguredDecoder
 }

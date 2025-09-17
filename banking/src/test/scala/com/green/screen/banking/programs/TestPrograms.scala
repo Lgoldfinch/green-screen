@@ -1,8 +1,9 @@
 package com.green.screen.banking.programs
 
 import cats.data.NonEmptyList
-import com.green.screen.banking.algebras.{Companies, Users}
+import com.green.screen.banking.algebras.{Companies, OpenBankingTransactions, Users}
 import com.green.screen.banking.domain.companies.{Company, CompanyName, CompanyUuid}
+import com.green.screen.banking.domain.transactions.OpenBankingTransaction
 import com.green.screen.banking.domain.users.*
 
 class TestUsers[F[_]] extends Users[F] {
@@ -21,4 +22,12 @@ class TestCompanies[F[_]] extends Companies[F] {
   override def getCompany(companyUuid: CompanyUuid): F[Option[Company]] = ???
 
   override def getCompanyUuidByName(transactionEntity: CompanyName): F[Option[CompanyUuid]] = ???
+}
+
+class TestOpenBankingTransactions[F[_]] extends OpenBankingTransactions[F] {
+  override def getTransactions(
+      companyUuid: CompanyUuid,
+  ): F[List[OpenBankingTransaction]] = ???
+  
+  override def createTransaction(transaction: OpenBankingTransaction): F[Unit] = ???
 }
