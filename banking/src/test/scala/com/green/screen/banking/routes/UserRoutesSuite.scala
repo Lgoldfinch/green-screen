@@ -2,9 +2,10 @@ package com.green.screen.banking.routes
 
 import cats.effect.IO
 import cats.syntax.all.*
+import com.green.screen.banking.algebras.TestUsers
 import com.green.screen.banking.domain.users.{User, UserScore, UserUuid}
 import com.green.screen.banking.generators.users.{userScore, userUuidGen}
-import com.green.screen.banking.programs.{CreateUser, GetUserScores, TestUsers}
+import com.green.screen.banking.programs.{CreateUser, GetUserScores}
 import com.green.screen.common.auth.UserType
 import munit.{CatsEffectSuite, ScalaCheckEffectSuite}
 import org.http4s.*

@@ -1,6 +1,7 @@
 package com.green.screen.banking.programs
 
 import cats.Id
+import com.green.screen.banking.algebras.TestUsers
 import com.green.screen.banking.domain.users.User
 import munit.{FunSuite, ScalaCheckSuite}
 import org.typelevel.log4cats.Logger

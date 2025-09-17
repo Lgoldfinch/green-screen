@@ -11,6 +11,7 @@ import com.green.screen.banking.generators.transactions.createTransactionRequest
 import com.green.screen.banking.programs.ProcessTransaction.CompanyNotFound
 import com.green.screen.common.GivenInstances.given
 import cats.syntax.all.*
+import com.green.screen.banking.algebras.{TestCompanies, TestOpenBankingTransactions}
 import com.green.screen.banking.domain.transactions.OpenBankingTransaction
 
 class ProcessTransactionSuite extends FunSuite with ScalaCheckSuite {

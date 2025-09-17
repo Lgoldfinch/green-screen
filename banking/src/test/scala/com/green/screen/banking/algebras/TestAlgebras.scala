@@ -1,4 +1,4 @@
-package com.green.screen.banking.programs
+package com.green.screen.banking.algebras
 
 import cats.data.NonEmptyList
 import com.green.screen.banking.algebras.{Companies, OpenBankingTransactions, Users}

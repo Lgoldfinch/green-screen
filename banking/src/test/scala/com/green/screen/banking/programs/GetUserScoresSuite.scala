@@ -2,9 +2,9 @@ package com.green.screen.banking.programs
 
 import org.scalacheck.effect.PropF.*
 import com.green.screen.banking.generators.users.*
-import com.green.screen.banking.algebras.Users
+import com.green.screen.banking.algebras.{TestUsers, Users}
 import com.green.screen.banking.programs.GetUserScores.UserNotFound
-import munit.{ CatsEffectSuite, ScalaCheckEffectSuite }
+import munit.{CatsEffectSuite, ScalaCheckEffectSuite}
 import cats.effect.IO
 import cats.syntax.all.*
 import com.green.screen.banking.domain.users.*

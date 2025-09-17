@@ -2,6 +2,7 @@ package com.green.screen.banking.programs
 
 import cats.Id
 import cats.syntax.all.*
+import com.green.screen.banking.algebras.TestCompanies
 import com.green.screen.banking.domain.companies.Company
 import com.green.screen.banking.generators.companies.createCompanyRequestGen
 import com.green.screen.common.GivenInstances.given
